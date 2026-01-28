@@ -1,3 +1,4 @@
+require "./lib/crystal-pegmatite/src/pegmatite"
 
 class Corp
   property filename : String
