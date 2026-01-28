@@ -7,8 +7,9 @@ task :spec do
 end
 
 desc "Run all"
-task default: :spec
-
+task default: :spec do # how to put a rake sound[frog] here?
+  Rake::Task["sound"].invoke("frog")
+end
 #
 # ---- Ruby tests (if you ever add any) ----
 #
@@ -33,3 +34,29 @@ end
 # task test: [:ruby, :crystal]
 #
 # task default: :test
+
+
+# Rakefile — le blas Gaeilge (with a taste of Irish)
+
+# --- Foclóir Beag (tiny glossary) ---
+# ainm   = name
+# fuaim  = sound
+# comhad = file
+# cosán  = path
+# seinm  = play (music/sound)
+
+desc "Seinn fuaim ainmhí: rake sound[kitten]" # Play an animal sound
+task :sound, [:ainm] do |t, args|
+  ainm = args[:ainm] || "kitten"                 # default animal name
+    cosán = File.join("scripts", "#{ainm}.wav")    # path to sound file
+
+  unless File.exist?(cosán)
+    puts "Níl an comhad fuaime ann: #{cosán}"    # Sound file not found
+    exit 1
+  end
+
+  puts "Ag seinm fuaim: #{ainm} 🐾"              # Playing sound
+
+  # Try PulseAudio first, fall back to ALSA
+  system("paplay", cosán) || system("aplay", cosán)
+end
