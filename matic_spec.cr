@@ -18,9 +18,26 @@ describe Corp do
 
       filenames.any? { |f| f.includes?(".txt") }.should be_true
 
-      bodies.any? { |b| b.includes?("Title: Three Men in a Boat") }.should be_true
-      bodies.any? { |b| b.includes?("or, the Modern Prometheus") }.should be_true
-      bodies.any? { |b| b.includes?("and he said it was called “paprika hendl,”") }.should be_true
+      assert_substring "and he said it was called “paprika hendl,”", bodies[0]
+      assert_substring "or, the Modern Prometheus", bodies[1]
+      assert_substring "Title: Three Men in a Boat", bodies[2]
+      bodies[0].includes?("and he said it was called “paprika hendl,”").should be_true
+      bodies[1].includes?("or, the Modern Prometheus").should be_true
+      bodies[2].includes?("Title: Three Men in a Boat").should be_true
     end
   end
+end
+
+def assert_substring(reference : String, sample : String, swatch_size = 40)
+  return if sample.includes?(reference)
+
+  # Provide context: show the start of the sample or a truncated version
+  swatch = sample.size > swatch_size ? "#{sample[0...swatch_size]}..." : sample
+
+  fail <<-ERROR
+  Expected substring missing:
+    Expected: #{reference.inspect}
+    In sample: #{swatch.inspect}
+    (Full sample size: #{sample.size} bytes)
+  ERROR
 end
