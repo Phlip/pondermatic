@@ -26,6 +26,26 @@ describe Corp do
       bodies[2].includes?("Title: Three Men in a Boat").should be_true
     end
   end
+
+  describe ".parseFolder() with Pegmatite" do
+    it "tokenizes book text into words and punctuation tokens" do
+      results = Corp.parseFolder("./corpus")
+
+      dracula = results[0]
+      frankenstein = results[1]
+      boat = results[2]
+
+      dracula.tokens.should_not be_empty
+      frankenstein.tokens.should_not be_empty
+      boat.tokens.should_not be_empty
+
+      # Words
+      dracula.tokens.size.should eq 28237
+      frankenstein.tokens.size.should eq 26711
+      boat.tokens.size.should eq 28059
+    end
+  end
+
 end
 
 def assert_substring(reference : String, sample : String, swatch_size = 40)
