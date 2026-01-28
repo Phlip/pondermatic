@@ -15,6 +15,7 @@ class Corp
       results << Corp.new(file, content)
     end
 
-    results
+    results.sort_by! { |c| File.basename(c.filename) }
+    return results
   end
 end

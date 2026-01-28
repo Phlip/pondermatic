@@ -9,6 +9,10 @@ describe Corp do
       results.should be_a(Array(Corp))
       results.size.should be > 0
 
+      results[0].filename.should eq "./corpus/dracula.txt"
+      results[1].filename.should eq "./corpus/frankenstein.txt"
+      results[2].filename.should eq "./corpus/three_men_in_a_boat.txt"
+
       filenames = results.map(&.filename)
       bodies = results.map(&.body)
 
