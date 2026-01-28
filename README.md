@@ -6,6 +6,14 @@ don't read farther without basic Crystal Language comprehension
 
 install Rakefile and run
 
+on a Debian just run
+
+$ sh install.sh
+
+if you have no Debian, run one in a virtual box.
+
+Now get started
+
 $ rake  #  to build and test
 
 or
