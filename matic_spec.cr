@@ -29,6 +29,10 @@ describe Corp do
 
   describe ".parseFolder() with Pegmatite" do
     it "tokenizes book text into words and punctuation tokens" do
+
+# TODO  debug me      ddd_break
+
+
       results = Corp.parseFolder("./corpus")
 
       dracula = results[0]
@@ -80,4 +84,15 @@ def assert_substring(reference : String, sample : String, swatch_size = 40)
     In sample: #{swatch.inspect}
     (Full sample size: #{sample.size} bytes)
   ERROR
+end
+
+# Use the C library approach for maximum compatibility
+@[Link("c")]
+lib LibC
+  fun raise(sig : Int32) : Int32
+  SIG_TRAP = 5
+end
+
+def ddd_break
+  LibC.raise(LibC::SIG_TRAP)
 end

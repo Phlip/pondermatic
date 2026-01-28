@@ -1,16 +1,27 @@
 require "rake"
 require "rake/testtask"   # Adds the Rake::TestTask class for running Ruby test files
 
-desc "Run Crystal specs"
-task :spec do
-  sh "crystal spec matic_spec.cr"
+CR_SOURCES = FileList["**/*.cr"]
+APP_OUT    = "ponder"
+SPEC_OUT   = "matic_spec"
+
+desc "Run Crystal specs (debug build)"
+task spec: [APP_OUT, SPEC_OUT] do
+  sh "./#{SPEC_OUT}"
 end
 
-desc "Build"
-task :build do
-  sh 'crystal build --debug ponder.cr'
-#  sh 'lldb ./ponder'
+desc "Build main app if sources changed"
+file APP_OUT => CR_SOURCES do
+  sh "crystal build --debug ponder.cr -o #{APP_OUT}"
 end
+
+desc "Build spec binary if sources changed"
+file SPEC_OUT => CR_SOURCES do
+  sh "crystal build --debug matic_spec.cr -o #{SPEC_OUT}"
+end
+
+desc "Build everything (only if needed)"
+task build: :spec
 
 desc "Run all"
 task default: [:build, :spec] do # how to put a rake sound[frog] here?
