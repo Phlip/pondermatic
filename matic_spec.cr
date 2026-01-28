@@ -43,6 +43,26 @@ describe Corp do
       dracula.tokens.size.should eq 28237
       frankenstein.tokens.size.should eq 26711
       boat.tokens.size.should eq 28059
+
+      dracula.tokens[0].type.should eq :sentence  # TODO  parse long spacies as sentence endos
+      dracula.tokens[0].value.should eq "The Project Gutenberg eBook of Dracula\r\n    \r\nThis ebook is for the use of anyone anywhere in the United States and\r\nmost other parts of the world at no cost and with almost no restrictions\r\nwhatsoever. Yo"
+      dracula.tokens[0].peg[0].should eq :sentence
+      dracula.tokens[0].peg[1].should eq 3
+      dracula.tokens[0].peg[2].should eq 205
+      dracula.tokens[1].peg[0].should eq :word
+      dracula.tokens[1].peg[1].should eq 7
+      dracula.tokens[1].peg[2].should eq 14
+      dracula.tokens[1].type.should eq :word
+      dracula.tokens[1].value.should eq "Project Gutenb"
+      dracula.tokens[2].type.should eq :word
+      dracula.tokens[2].value.should eq "Gutenberg eBook of Dracu"  #  TODO this should be a lookup into the corpus at the known location
+      # # dracula.tokens[1][0][0].should eq :yo
+      # dracula.tokens[1][0][1].should eq 0
+      # dracula.tokens[1][0][2].should eq 1
+      # dracula.tokens[2][0][0].should eq :yo
+      # dracula.tokens[2][0][1].should eq 0
+      # dracula.tokens[2][0][2].should eq 1
+
     end
   end
 

@@ -6,10 +6,17 @@ task :spec do
   sh "crystal spec matic_spec.cr"
 end
 
+desc "Build"
+task :build do
+  sh 'crystal build --debug ponder.cr'
+#  sh 'lldb ./ponder'
+end
+
 desc "Run all"
-task default: :spec do # how to put a rake sound[frog] here?
+task default: [:build, :spec] do # how to put a rake sound[frog] here?
   Rake::Task["sound"].invoke("frog")
 end
+
 #
 # ---- Ruby tests (if you ever add any) ----
 #
