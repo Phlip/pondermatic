@@ -36,7 +36,7 @@ task :test_libs do
 end
 
 desc "Run all"
-task default: [:build, :spec, :test_libs, APP_OUT] do # how to put a rake sound[frog] here?
+task default: [:build, :spec, :test_libs, APP_OUT] do
   Rake::Task["sound"].invoke("frog")
 end
 
