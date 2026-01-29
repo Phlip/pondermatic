@@ -12,8 +12,6 @@ end
 
 desc "Run Crystal specs (debug build)"
 task spec: SPEC_OUT do
-  sh 'crystal lib/crystal-pegmatite/spec/dynamics_spec.cr'
-  sh 'crystal lib/crystal-pegmatite/spec/pegmatite_spec.cr'
   sh "./#{SPEC_OUT}"
 end
 
@@ -31,8 +29,14 @@ end
 desc "Build everything (only if needed)"
 task build: :spec
 
+desc 'test libs'
+task :test_libs do
+  sh 'crystal lib/crystal-pegmatite/spec/dynamics_spec.cr'
+  sh 'crystal lib/crystal-pegmatite/spec/pegmatite_spec.cr'
+end
+
 desc "Run all"
-task default: [:build, :spec, APP_OUT] do # how to put a rake sound[frog] here?
+task default: [:build, :spec, :test_libs, APP_OUT] do # how to put a rake sound[frog] here?
   Rake::Task["sound"].invoke("frog")
 end
 
