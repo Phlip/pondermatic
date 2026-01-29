@@ -60,12 +60,51 @@ describe Corp do
       dracula.tokens[1].value.should eq "Project Gutenb"
       dracula.tokens[2].type.should eq :word
       dracula.tokens[2].value.should eq "Gutenberg eBook of Dracu"  #  TODO this should be a lookup into the corpus at the known location
-      # # dracula.tokens[1][0][0].should eq :yo
-      # dracula.tokens[1][0][1].should eq 0
-      # dracula.tokens[1][0][2].should eq 1
-      # dracula.tokens[2][0][0].should eq :yo
-      # dracula.tokens[2][0][1].should eq 0
-      # dracula.tokens[2][0][2].should eq 1
+
+      frankenstein.tokens[0].type.should eq :sentence  # TODO  parse long spacies as sentence endos
+      frankenstein.tokens[0].value.should contain("START OF THE PROJECT GUTENBERG EBOOK 84 ***\n" +
+       "\n" +
+       "Frankenstein;\n" +
+       "\n" +
+       "or, the Modern Prometheus\n" +
+       "\n" +
+       "by Mary Wollstonecraft (Godwin) Shelley\n")
+      frankenstein.tokens[0].peg[0].should eq :sentence
+      frankenstein.tokens[0].peg[1].should eq 4
+      frankenstein.tokens[0].peg[2].should eq 485
+      frankenstein.tokens[1].type.should eq :word
+      frankenstein.tokens[1].value.should eq "OF THE PROJE"
+      frankenstein.tokens[1].peg[0].should eq :word
+      frankenstein.tokens[1].peg[1].should eq 10
+      frankenstein.tokens[1].peg[2].should eq 12
+      frankenstein.tokens[1].type.should eq :word
+      frankenstein.tokens[2].value.should eq "THE PROJECT GUTE"
+      frankenstein.tokens[2].type.should eq :word
+      frankenstein.tokens[3].type.should eq :word
+      frankenstein.tokens[3].value.should eq "PROJECT GUTENBERG EBOOK "
+      frankenstein.tokens[4].type.should eq :word
+      frankenstein.tokens[4].value.should eq "GUTENBERG EBOOK 84 ***\n" + "\n" + "Frankenste"
+      frankenstein.tokens[5].type.should eq :word
+      frankenstein.tokens[5].value.should eq "EBOOK 84 ***\n" + "\n" + "Frankenstein;\n" + "\n" + "or, the Mod"
+
+      boat.tokens[0].type.should eq :sentence  # TODO  parse long spacies as sentence endos
+      boat.tokens[0].value.should eq "The Project Gutenberg eBook, Three Men in a Boat, by Jerome K. Je"
+      boat.tokens[0].peg[0].should eq :sentence
+      boat.tokens[0].peg[1].should eq 3
+      boat.tokens[0].peg[2].should eq 65
+      boat.tokens[1].peg[0].should eq :word
+      boat.tokens[1].peg[1].should eq 7
+      boat.tokens[1].value.should eq "Project Gutenb"
+      boat.tokens[1].peg[2].should eq 14
+      boat.tokens[1].type.should eq :word
+      boat.tokens[2].type.should eq :word
+      boat.tokens[2].value.should eq "Gutenberg eBook, Three M"
+      boat.tokens[3].type.should eq :word
+      boat.tokens[3].value.should eq "eBook, Three Men in a Boat, by"
+      boat.tokens[4].type.should eq :word
+      boat.tokens[4].value.should eq "Three Men in a Boat, by Jerome K. Jer"
+      boat.tokens[5].type.should eq :word
+      boat.tokens[5].value.should eq "Men in a Boat, by Jerome K. Jerome\r\n" + "\r\n" + "Thi"
 
     end
   end

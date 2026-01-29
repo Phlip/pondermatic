@@ -1,12 +1,17 @@
 require "rake"
 require "rake/testtask"   # Adds the Rake::TestTask class for running Ruby test files
+require "listen"
 
 CR_SOURCES = FileList["**/*.cr"]
 APP_OUT    = "ponder"
 SPEC_OUT   = "matic_spec"
 
+task :clean do
+  `rm --force #{APP_OUT} #{SPEC_OUT}`
+end
+
 desc "Run Crystal specs (debug build)"
-task spec: [APP_OUT, SPEC_OUT] do
+task spec: SPEC_OUT do
   sh "./#{SPEC_OUT}"
 end
 
@@ -17,6 +22,7 @@ end
 
 desc "Build spec binary if sources changed"
 file SPEC_OUT => CR_SOURCES do
+  `rm -f ./#{APP_OUT}`
   sh "crystal build --debug matic_spec.cr -o #{SPEC_OUT}"
 end
 
@@ -24,9 +30,24 @@ desc "Build everything (only if needed)"
 task build: :spec
 
 desc "Run all"
-task default: [:build, :spec] do # how to put a rake sound[frog] here?
+task default: [:build, :spec, APP_OUT] do # how to put a rake sound[frog] here?
   Rake::Task["sound"].invoke("frog")
 end
+
+desc "Watch git files and rebuild on change"
+task :watch do
+  files = `git ls-files`.split("\n")
+
+  listener = Listen.to(".", only: Regexp.union(files.map { |f| Regexp.new("^#{Regexp.escape(f)}$") })) do |_modified, _added, _removed|
+    puts "🔁 Git file changed — rebuilding..."
+    system("rake && rake sound[frogs]")
+  end
+
+  puts "👀 Watching git-tracked files..."
+  listener.start
+  sleep
+end
+
 
 #
 # ---- Ruby tests (if you ever add any) ----
