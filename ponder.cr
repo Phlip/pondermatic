@@ -82,3 +82,14 @@ class Corp
   end
 
 end
+
+# Use the C library approach for maximum compatibility
+@[Link("c")]
+lib LibC
+  fun raise(sig : Int32) : Int32
+  SIG_TRAP = 5
+end
+
+def ddd_break
+  LibC.raise(LibC::SIG_TRAP)
+end
