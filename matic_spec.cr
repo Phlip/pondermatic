@@ -1,5 +1,6 @@
 require "spec"
 require "./ponder"
+require "./lib/crystal-pegmatite/spec/fixtures/*"
 
 describe Corp do
   describe ".parseFolder" do
@@ -110,26 +111,7 @@ describe Corp do
     end
   end
 
-end
-
-def assert_substring(reference : String, sample : String, swatch_size = 40)
-  return if sample.includes?(reference)
-
-  # Provide context: show the start of the sample or a truncated version
-  swatch = sample.size > swatch_size ? "#{sample[0...swatch_size]}..." : sample
-
-  fail <<-ERROR
-  Expected substring missing:
-    Expected: #{reference.inspect}
-    In sample: #{swatch.inspect}
-    (Full sample size: #{sample.size} bytes)
-  ERROR
-end
-
-require "./lib/crystal-pegmatite/spec/fixtures/*"
-
-describe "Pegmatite dynamic matchers" do
-  it "can be used to parse heredoc-like structures" do
+  it "Fixtures::HeredocGrammar parses heredoc-like structures" do
     source = <<-SRC
     one = 1
     two = <<-TWO
@@ -156,4 +138,21 @@ describe "Pegmatite dynamic matchers" do
       {:number, 50, 51},     # 3
     ]
   end
+
 end
+
+def assert_substring(reference : String, sample : String, swatch_size = 40)
+  return if sample.includes?(reference)
+
+  # Provide context: show the start of the sample or a truncated version
+  swatch = sample.size > swatch_size ? "#{sample[0...swatch_size]}..." : sample
+
+  fail <<-ERROR
+  Expected substring missing:
+    Expected: #{reference.inspect}
+    In sample: #{swatch.inspect}
+    (Full sample size: #{sample.size} bytes)
+  ERROR
+end
+
+
