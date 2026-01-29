@@ -13,17 +13,18 @@ end
 desc "Run Crystal specs (debug build)"
 task spec: SPEC_OUT do
   sh "./#{SPEC_OUT}"
+#  sh "CRYSTAL_DEBUG=1 ./#{SPEC_OUT}"
 end
 
 desc "Build main app if sources changed"
 file APP_OUT => CR_SOURCES do
-  sh "crystal build --debug ponder.cr -o #{APP_OUT}"
+  sh "crystal build --debug --error-trace ponder.cr -o #{APP_OUT}"
 end
 
 desc "Build spec binary if sources changed"
 file SPEC_OUT => CR_SOURCES do
-  `rm -f ./#{APP_OUT}`
-  sh "crystal build --debug matic_spec.cr -o #{SPEC_OUT}"
+  `rm --force ./#{APP_OUT}`
+  sh "crystal build --debug --error-trace matic_spec.cr -o #{SPEC_OUT}"
 end
 
 desc "Build everything (only if needed)"
@@ -53,7 +54,6 @@ task :watch do
   listener.start
   sleep
 end
-
 
 #
 # ---- Ruby tests (if you ever add any) ----
