@@ -12,6 +12,8 @@ end
 
 desc "Run Crystal specs (debug build)"
 task spec: SPEC_OUT do
+  sh 'crystal lib/crystal-pegmatite/spec/dynamics_spec.cr'
+  sh 'crystal lib/crystal-pegmatite/spec/pegmatite_spec.cr'
   sh "./#{SPEC_OUT}"
 end
 

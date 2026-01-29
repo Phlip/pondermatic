@@ -1,4 +1,0 @@
-mkdir -p lib
-cd lib
-git clone --depth 1 https://github.com/jemc/crystal-pegmatite
-cd ..
