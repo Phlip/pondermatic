@@ -51,7 +51,13 @@ describe Corp do
       boat.tokens.size.should eq 28059
 
       dracula.tokens[0].type.should eq :sentence  # TODO  parse long spacies as sentence endos
-      dracula.tokens[0].value.should eq "The Project Gutenberg eBook of Dracula\r\n    \r\nThis ebook is for the use of anyone anywhere in the United States and\r\nmost other parts of the world at no cost and with almost no restrictions\r\nwhatsoever. Yo"
+
+      dracula.tokens[0].value.should eq "The Project Gutenberg eBook of Dracula\r\n" +
+       "    \r\n" +
+       "This ebook is for the use of anyone anywhere in the United States and\r\n" +
+       "most other parts of the world at no cost and with almost no restrictions\r\n" +
+       "whatsoever."
+
       dracula.tokens[0].peg[0].should eq :sentence
       dracula.tokens[0].peg[1].should eq 3
       dracula.tokens[0].peg[2].should eq 205
@@ -59,9 +65,9 @@ describe Corp do
       dracula.tokens[1].peg[1].should eq 7
       dracula.tokens[1].peg[2].should eq 14
       dracula.tokens[1].type.should eq :word
-      dracula.tokens[1].value.should eq "Project Gutenb"
+      dracula.tokens[1].value.should eq "Project"
       dracula.tokens[2].type.should eq :word
-      dracula.tokens[2].value.should eq "Gutenberg eBook of Dracu"  #  TODO this should be a lookup into the corpus at the known location
+      dracula.tokens[2].value.should eq "Gutenberg"  #  TODO this should be a lookup into the corpus at the known location
 
       frankenstein.tokens[0].type.should eq :sentence  # TODO  parse long spacies as sentence endos
       frankenstein.tokens[0].value.should contain("START OF THE PROJECT GUTENBERG EBOOK 84 ***\n" +
@@ -75,39 +81,38 @@ describe Corp do
       frankenstein.tokens[0].peg[1].should eq 4
       frankenstein.tokens[0].peg[2].should eq 485
       frankenstein.tokens[1].type.should eq :word
-      frankenstein.tokens[1].value.should eq "OF THE PROJE"
+      frankenstein.tokens[1].value.should eq "OF"
       frankenstein.tokens[1].peg[0].should eq :word
       frankenstein.tokens[1].peg[1].should eq 10
       frankenstein.tokens[1].peg[2].should eq 12
       frankenstein.tokens[1].type.should eq :word
-      frankenstein.tokens[2].value.should eq "THE PROJECT GUTE"
+      frankenstein.tokens[2].value.should eq "THE"
       frankenstein.tokens[2].type.should eq :word
       frankenstein.tokens[3].type.should eq :word
-      frankenstein.tokens[3].value.should eq "PROJECT GUTENBERG EBOOK "
+      frankenstein.tokens[3].value.should eq "PROJECT"
       frankenstein.tokens[4].type.should eq :word
-      frankenstein.tokens[4].value.should eq "GUTENBERG EBOOK 84 ***\n" + "\n" + "Frankenste"
+      frankenstein.tokens[4].value.should eq "GUTENBERG"
       frankenstein.tokens[5].type.should eq :word
-      frankenstein.tokens[5].value.should eq "EBOOK 84 ***\n" + "\n" + "Frankenstein;\n" + "\n" + "or, the Mod"
+      frankenstein.tokens[5].value.should eq "EBOOK"
 
       boat.tokens[0].type.should eq :sentence  # TODO  parse long spacies as sentence endos
-      boat.tokens[0].value.should eq "The Project Gutenberg eBook, Three Men in a Boat, by Jerome K. Je"
+      boat.tokens[0].value.should eq "The Project Gutenberg eBook, Three Men in a Boat, by Jerome K."
       boat.tokens[0].peg[0].should eq :sentence
       boat.tokens[0].peg[1].should eq 3
       boat.tokens[0].peg[2].should eq 65
       boat.tokens[1].peg[0].should eq :word
       boat.tokens[1].peg[1].should eq 7
-      boat.tokens[1].value.should eq "Project Gutenb"
+      boat.tokens[1].value.should eq "Project"
       boat.tokens[1].peg[2].should eq 14
       boat.tokens[1].type.should eq :word
       boat.tokens[2].type.should eq :word
-      boat.tokens[2].value.should eq "Gutenberg eBook, Three M"
+      boat.tokens[2].value.should eq "Gutenberg"
       boat.tokens[3].type.should eq :word
-      boat.tokens[3].value.should eq "eBook, Three Men in a Boat, by"
+      boat.tokens[3].value.should eq "eBook"
       boat.tokens[4].type.should eq :word
-      boat.tokens[4].value.should eq "Three Men in a Boat, by Jerome K. Jer"
+      boat.tokens[4].value.should eq "Three"
       boat.tokens[5].type.should eq :word
-      boat.tokens[5].value.should eq "Men in a Boat, by Jerome K. Jerome\r\n" + "\r\n" + "Thi"
-
+      boat.tokens[5].value.should eq "Men"
     end
   end
 
