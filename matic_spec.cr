@@ -139,6 +139,31 @@ describe Corp do
     ]
   end
 
+  it "BookGrammar::MAIN parses heredoc-like structures" do
+    source = <<-SRC
+    one = 1
+    two = <<-TWO
+      I am a heredoc
+    TWO
+    three = 3
+
+    SRC
+
+    tokens = Pegmatite.tokenize(BookGrammar::MAIN, source)
+
+    tokens.should eq [{:word, 0, 3},
+        {:word, 6, 7},
+        {:word, 8, 11},
+        {:word, 17, 20},
+        {:word, 23, 24},
+        {:word, 25, 27},
+        {:word, 28, 29},
+        {:word, 30, 37},
+        {:word, 38, 41},
+        {:word, 42, 47},
+        {:word, 50, 51}]
+  end
+
 end
 
 def assert_substring(reference : String, sample : String, swatch_size = 40)
