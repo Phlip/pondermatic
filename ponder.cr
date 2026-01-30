@@ -13,13 +13,25 @@ class BookGrammar
   # Use the DSL.define block to build the pattern tree
   MAIN = Pegmatite::DSL.define do
     # Basic atoms
-    low    = range('a', 'z')
-    upp    = range('A', 'Z')
-    digit  = range('0', '9')
-    white  = l(" ") | l("\t") | l("\r") | l("\n")
+    low = range('a', 'z')
+    upp = range('A', 'Z')
+    digit = range('0', '9')
+    blank = l(" ")
+    collapsed = blank.repeat(1).named(:punct) # This captures a run of 1 or more spaces as a single token & saves cognitive room by identifying as a punct
+
+
+    # Define CRLF (carriage return + linefeed) as a single unit
+    crlf = (l("\r") >> l("\n")).named(:punct)
+
+    # Individual line breaks
+    cr = l("\r") # .named(:punct)      # carriage return alone
+    lf = l("\n") # .named(:punct)      # linefeed alone
+    brk = (crlf | cr | lf).named(:punct)
+    white = collapsed | l("\t") | brk
 
     # Punctuation and Catch-all
-    punct   = l('.') | l(',') | l(':') | l(';') | l('!') | l('?') | l('-') | l('"')
+    punct   = l('.') | l(',') | l(':') | l(';') | l('!') | l('?') | l('-') | l('"') | l('\'')
+    punct = punct.named(:punct)
     unknown = any # Non-judgmental fallback
 
     # Rules
@@ -30,8 +42,11 @@ class BookGrammar
     terminal  = l('.') | l('!') | l('?')
     sentence  = (sentence_start >> (~terminal >> (word | punct | white | unknown)).repeat >> terminal).named(:sentence)
 
+    paragraph = (sentence.repeat(1) >> brk.maybe).named(:paragraph)
+
     # Top level entry point
-    (sentence | white | word | punct | unknown).repeat.then_eof
+
+    (paragraph | sentence | white | word | punct | unknown).repeat.then_eof
   end
 end
 
@@ -39,7 +54,7 @@ class Corp
   property filename : String
   property body : String
   property tokens : Array(Token) = [] of Token
-  LIMIT = 150_000
+  LIMIT = 200_000
 
   def self.parseFolder(path : String) : Array(Corp)
     results = [] of Corp
@@ -49,6 +64,7 @@ class Corp
 
       # Inside your loop
       # .head(n) is safe: it returns at most n characters, handling UTF-8 boundaries
+
       content = File.read(file, encoding: "UTF-8", invalid: :skip)[0...LIMIT]
       results << Corp.new(file, content)
     end
