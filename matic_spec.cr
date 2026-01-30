@@ -326,10 +326,28 @@ describe Corp do
 #      boat.tokens[56].value.should eq "Men"
 #      # Sentences, Words, and punctuation
 
+      assert_matches(["\r\n",
+                             "\r\n",
+                             "liver",
+                             " ",
+                             "complaint",
+                             " ",
+                             "in",
+                             " ",
+                             "children",
+                             "We agree that we are overworked,\r\n" + "and need rest.",
+                             "We agree that we are overworked,\r\n" + "and need rest."],
+                        boat.tokens[1000..1010], &.value)
+
       [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [41773, 37775, 42286]
     end
   end
 
+end  # Error: expecting identifier 'end', not 'EOF
+
+def assert_matches(expected, tokens, &block : Token -> _)
+  actual = tokens.map { |t| yield t }
+  actual.should eq(expected)
 end
 
 def assert_substring(reference : String, sample : String, swatch_size = 40)

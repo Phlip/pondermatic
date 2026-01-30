@@ -12,8 +12,9 @@ end
 
 desc "Run Crystal specs (debug build)"
 task spec: SPEC_OUT do
-  sh "./#{SPEC_OUT}"
+ sh "./#{SPEC_OUT} --verbose"
 #  sh "CRYSTAL_DEBUG=1 ./#{SPEC_OUT}"
+#   sh "./#{SPEC_OUT}"
 end
 
 desc "Build main app if sources changed"
