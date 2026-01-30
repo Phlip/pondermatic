@@ -164,6 +164,26 @@ describe Corp do
         {:word, 50, 51}]
   end
 
+  it "BookGrammar::MAIN parses booklike structures" do
+    source = <<-SRC
+    This is a sentence.
+    And this is
+    another sentence.
+    SRC
+
+    tokens = Pegmatite.tokenize(BookGrammar::MAIN, source)
+
+    tokens.should eq [{:sentence, 0, 19},
+        {:word, 5, 7},
+        {:word, 8, 9},
+        {:word, 10, 18},
+        {:sentence, 20, 49},
+        {:word, 24, 28},
+        {:word, 29, 31},
+        {:word, 32, 39},
+        {:word, 40, 48}]
+  end
+
 end
 
 def assert_substring(reference : String, sample : String, swatch_size = 40)
