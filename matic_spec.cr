@@ -126,6 +126,12 @@ describe Corp do
         {:word, 32, 39},
         {:punct, 39, 40},
         {:word, 40, 48}]
+
+#    assert_matches ["yo", "yo"], tokens do |peg|
+#      source[peg.peg[1]..(peg.peg[2] - peg.peg[1])]
+#    end
+# Error: undefined method '[]' for Token
+
   end
 
   describe ".parseFolder() with Pegmatite" do
