@@ -1,0 +1,13 @@
+name: ponder_matic
+version: 0.1.0
+
+authors:
+  - Your Name <your.email@example.com>
+
+targets:
+  ponder:
+    main: ponder.cr
+#  matic:
+ #   main: matic.sh # Note: Crystal targets usually expect .cr files.
+                   # If matic.sh is just a wrapper, you don't need it here.
+
