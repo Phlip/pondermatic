@@ -84,11 +84,15 @@ class Corp
       result = Pegmatite.tokenize(BookGrammar::MAIN, @body)
 
       @tokens = result.compact_map do |p_tuple|
+
         # p_tuple is {Symbol, Int32, Int32}
+
         next if p_tuple[0] == :ignored
 
         # Index 1 is offset, Index 2 is length (or end offset depending on Pegmatite version)
-        val = @body.byte_slice(p_tuple[1], p_tuple[2] - p_tuple[1])
+
+        token_length = p_tuple[2] - p_tuple[1]
+        val = @body.byte_slice(p_tuple[1], token_length)
         Token.new(p_tuple[0], val, p_tuple)
       end
 
