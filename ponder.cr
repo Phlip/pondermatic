@@ -54,7 +54,7 @@ class Corp
   property filename : String
   property body : String
   property tokens : Array(Token) = [] of Token
-  LIMIT = 200_000
+  LIMIT = 100_000
 
   def self.parseFolder(path : String) : Array(Corp)
     results = [] of Corp
@@ -77,8 +77,6 @@ class Corp
     # --- Token easter ---
     # Very simple Pegmatite-style tokenizer: words, punctuation, quotes
     # Inside your initializer
-
-    # result = Pegmatite.tokenize(BookGrammar::MAIN, @body)
 
     begin
       result = Pegmatite.tokenize(BookGrammar::MAIN, @body)

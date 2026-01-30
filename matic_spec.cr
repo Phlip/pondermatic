@@ -326,7 +326,7 @@ describe Corp do
 #      boat.tokens[56].value.should eq "Men"
 #      # Sentences, Words, and punctuation
 
-      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [84432, 76295, 84934]
+      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [41773, 37775, 42286]
     end
   end
 
