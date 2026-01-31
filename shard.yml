@@ -1,8 +1,8 @@
-name: ponder_matic
+name: pondermatic
 version: 0.1.0
 
 authors:
-  - Your Name <your.email@example.com>
+  - Phlip <phlip2005@gmail.com>
 
 targets:
   ponder:
