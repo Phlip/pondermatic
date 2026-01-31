@@ -73,13 +73,7 @@ task :crystal do
   sh "crystal spec matic_spec.cr"
 end
 
-#
-# ---- Combined ----
-#
-# desc "Run all tests (Ruby + Crystal)"
-# task test: [:ruby, :crystal]
-#
-# task default: :test
+# the prompt for the sound mixer demanded Gaelic language
 
 # Rakefile — le blas Gaeilge (with a taste of Irish)
 
@@ -92,8 +86,9 @@ end
 
 desc "Seinn fuaim ainmhí: rake sound[kitten]" # Play an animal sound
 task :sound, [:ainm] do |t, args|
+  puts "le blas Gaeilge (with a taste of Irish)"
   ainm = args[:ainm] || "kitten"                 # default animal name
-    cosán = File.join("scripts", "wav", "#{ainm}.wav")    # path to sound file
+  cosán = File.join("scripts", "wav", "#{ainm}.wav")    # path to sound file
 
   unless File.exist?(cosán)
     puts "Níl an comhad fuaime ann: #{cosán}"    # Sound file not found
