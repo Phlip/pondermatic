@@ -12,7 +12,7 @@ end
 
 desc "Run Crystal specs (debug build)"
 task spec: SPEC_OUT do
- sh "./#{SPEC_OUT} --verbose"
+ sh "./#{SPEC_OUT} --verbose --no-color"
 #  sh "CRYSTAL_DEBUG=1 ./#{SPEC_OUT}"
 #   sh "./#{SPEC_OUT}"
 end
@@ -33,8 +33,8 @@ task build: :spec
 
 desc 'test libs'
 task :test_libs do
-  sh 'crystal lib/crystal-pegmatite/spec/dynamics_spec.cr'
-  sh 'crystal lib/crystal-pegmatite/spec/pegmatite_spec.cr'
+  sh 'crystal lib/crystal-pegmatite/spec/dynamics_spec.cr --no-color'
+  sh 'crystal lib/crystal-pegmatite/spec/pegmatite_spec.cr --no-color'
 end
 
 desc "Run all"

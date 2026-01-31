@@ -2,6 +2,10 @@ require "spec"
 require "./ponder"
 require "./lib/crystal-pegmatite/spec/fixtures/*"
 
+def assert_spun(tokens, &block)
+  return tokens.map{|t| yield(t) }
+end
+
 describe Corp do
 
   describe ".parseFolder" do
@@ -106,6 +110,27 @@ describe Corp do
     SRC
 
     tokens = Pegmatite.tokenize(BookGrammar::MAIN, source)
+
+    ["This is a sentence.\n" + "A",
+            "This is a sentence.\n",
+            " i",
+            "is ",
+            " a",
+            "a ",
+            " s",
+            "sentence.",
+            "\n" + "A",
+            "And this is\n" + "another sentence.",
+            "And this is\n" + "another sentence.",
+            " t",
+            "this ",
+            " i",
+            "is\n",
+            "\n" + "a",
+            "another ",
+            " s",
+            "sentence."].should eq(
+            assert_spun(tokens){|t| source[t[1]..t[2]] })
 
     tokens.should eq [{:paragraph, 0, 20},
         {:sentence, 0, 19},
@@ -274,7 +299,6 @@ describe Corp do
       frankenstein.tokens[4].value.should eq "OF"
       frankenstein.tokens[5].type.should eq :punct
       frankenstein.tokens[5].value.should eq " "
-
       frankenstein.tokens[1].peg[0].should eq :paragraph
       frankenstein.tokens[1].peg[1].should eq 4
       frankenstein.tokens[1].peg[2].should eq 485
@@ -350,10 +374,6 @@ describe Corp do
   end
 
 end  # Error: expecting identifier 'end', not 'EOF
-
-def assert_spun(tokens, &block : (Token) -> _)
-  return tokens.map { |t| yield t }
-end
 
 def assert_substring(reference : String, sample : String, swatch_size = 40)
   return if sample.includes?(reference)
