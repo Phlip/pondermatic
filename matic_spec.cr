@@ -62,6 +62,9 @@ describe Corp do
   end
 
   it "BookGrammar::MAIN parses heredoc-like structures" do
+
+    # a heredoc inside a heredoc, folks!
+
     source = <<-SRC
     one = 1
     two = <<-TWO
@@ -132,7 +135,7 @@ describe Corp do
             "another",
             " ",
             "sentence"].should eq(
-            assert_spun(tokens){|t| source[t[1]...t[2]] })
+          assert_spun(tokens){|t| source[t[1]...t[2]] })
 
     tokens.should eq [{:paragraph, 0, 20},
         {:sentence, 0, 19},
@@ -158,9 +161,7 @@ describe Corp do
   describe ".parseFolder() with Pegmatite" do
     it "tokenizes book text into words and punctuation tokens" do
 
-
-# ddd_break  # TODO  debug me
-
+      # ddd_break  # TODO  debug me
 
       results = Corp.parseFolder("./corpus")
 
