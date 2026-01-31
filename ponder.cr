@@ -33,12 +33,12 @@ class BookGrammar
     unknown = any # Non-judgmental fallback
 
     # Rules
-    word           = (upp | low | digit).repeat(1).named(:word)
-    sentence_start = upp >> (low | upp | digit).repeat
+    word = (upp | low | digit).repeat(1).named(:word)
+    sentence_start = (upp >> (low | upp | digit).repeat).named(:word)
 
     # A sentence is a Cap, then anything that isn't terminal punct, then terminal punct
-    terminal  = l('.') | l('!') | l('?')
-    sentence  = (sentence_start >> (~terminal >> (word | punct | white | unknown)).repeat >> terminal).named(:sentence)
+    terminal = l('.') | l('!') | l('?')
+    sentence = (sentence_start >> (~terminal >> (word | punct | white | unknown)).repeat >> terminal).named(:sentence)
     paragraph = (sentence.repeat(1) >> brk.maybe).named(:paragraph)
 
     # Top level entry point

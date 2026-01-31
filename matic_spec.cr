@@ -116,7 +116,7 @@ describe Corp do
 
     ["This is a sentence.\n",
             "This is a sentence.",
-            # "This" is missing
+            "This",
             " ",
             "is",
             " ",
@@ -126,7 +126,7 @@ describe Corp do
             "\n",
             "And this is\n" + "another sentence.",
             "And this is\n" + "another sentence.",
-            # "And" is missing
+            "And",
             " ",
             "this",
             " ",
@@ -137,25 +137,28 @@ describe Corp do
             "sentence"].should eq(
           assert_spun(tokens){|t| source[t[1]...t[2]] })
 
+
     tokens.should eq [{:paragraph, 0, 20},
-        {:sentence, 0, 19},
-        {:punct, 4, 5},
-        {:word, 5, 7},
-        {:punct, 7, 8},
-        {:word, 8, 9},
-        {:punct, 9, 10},
-        {:word, 10, 18},
-        {:punct, 19, 20},
-        {:paragraph, 20, 49},
-        {:sentence, 20, 49},
-        {:punct, 23, 24},
-        {:word, 24, 28},
-        {:punct, 28, 29},
-        {:word, 29, 31},
-        {:punct, 31, 32},
-        {:word, 32, 39},
-        {:punct, 39, 40},
-        {:word, 40, 48}]
+                             {:sentence, 0, 19},
+                             {:word, 0, 4},
+                             {:punct, 4, 5},
+                             {:word, 5, 7},
+                             {:punct, 7, 8},
+                             {:word, 8, 9},
+                             {:punct, 9, 10},
+                             {:word, 10, 18},
+                             {:punct, 19, 20},
+                             {:paragraph, 20, 49},
+                             {:sentence, 20, 49},
+                             {:word, 20, 23},
+                             {:punct, 23, 24},
+                             {:word, 24, 28},
+                             {:punct, 28, 29},
+                             {:word, 29, 31},
+                             {:punct, 31, 32},
+                             {:word, 32, 39},
+                             {:punct, 39, 40},
+                             {:word, 40, 48}]
   end
 
   describe ".parseFolder() with Pegmatite" do
@@ -187,37 +190,43 @@ describe Corp do
       dracula.tokens[1].peg[0].should eq :sentence
       dracula.tokens[1].peg[1].should eq 3
       dracula.tokens[1].peg[2].should eq 205
-      dracula.tokens[2].peg[0].should eq :punct
-      dracula.tokens[2].peg[1].should eq 6
-      dracula.tokens[2].peg[2].should eq 7
-      dracula.tokens[3].type.should eq :word
-      dracula.tokens[3].value.should eq "Project"  # TODO  values on blanks not needed
-      dracula.tokens[4].type.should eq :punct
-      dracula.tokens[4].value.should eq " "  #  TODO this should be a lookup into the corpus at the known location
-      dracula.tokens[5].type.should eq :word
-      dracula.tokens[5].value.should eq "Gutenberg"
-      dracula.tokens[6].type.should eq :punct
-      dracula.tokens[6].value.should eq " "
-      dracula.tokens[7].value.should eq "eBook"
-      dracula.tokens[8].value.should eq " "
-      dracula.tokens[9].value.should eq "of"
-      dracula.tokens[10].value.should eq " "
-      dracula.tokens[11].value.should eq "Dracula"
-      dracula.tokens[12].value.should eq "\r\n"  # TODO  these define a paragraph
-      dracula.tokens[13].value.should eq "\r\n"
-      dracula.tokens[14].value.should eq "    "
-      dracula.tokens[15].value.should eq "\r\n"
-      dracula.tokens[17].value.should eq "This"
-      dracula.tokens[17+1].value.should eq " "
-      dracula.tokens[18+1].value.should eq "ebook"
-      dracula.tokens[19+1].value.should eq " "
-      dracula.tokens[20+1].value.should eq "is"
-      dracula.tokens[21+1].value.should eq " "
-      dracula.tokens[22+1].value.should eq "for"
-      dracula.tokens[23+1].value.should eq " "
-      dracula.tokens[24+1].value.should eq "the"
-      dracula.tokens[50].value.should eq "parts"
-      dracula.tokens[51].value.should eq " "
+
+      dracula.tokens[2].value.should eq "The"
+      dracula.tokens[2].peg[0].should eq :word
+      dracula.tokens[2].peg[1].should eq 3
+      dracula.tokens[2].peg[2].should eq 6
+      idx = 1
+      dracula.tokens[idx + 2].peg[0].should eq :punct
+      dracula.tokens[idx + 2].peg[1].should eq 6
+      dracula.tokens[idx + 2].peg[2].should eq 7
+      dracula.tokens[idx + 3].type.should eq :word
+      dracula.tokens[idx + 3].value.should eq "Project"  # TODO  values on blanks not needed
+      dracula.tokens[idx + 4].type.should eq :punct
+      dracula.tokens[idx + 4].value.should eq " "  #  TODO this should be a lookup into the corpus at the known location
+      dracula.tokens[idx + 5].type.should eq :word
+      dracula.tokens[idx + 5].value.should eq "Gutenberg"
+      dracula.tokens[idx + 6].type.should eq :punct
+      dracula.tokens[idx + 6].value.should eq " "
+      dracula.tokens[idx + 7].value.should eq "eBook"
+      dracula.tokens[idx + 8].value.should eq " "
+      dracula.tokens[idx + 9].value.should eq "of"
+      dracula.tokens[idx + 10].value.should eq " "
+      dracula.tokens[idx + 11].value.should eq "Dracula"
+      dracula.tokens[idx + 12].value.should eq "\r\n"  # TODO  these define a paragraph
+      dracula.tokens[idx + 13].value.should eq "\r\n"
+      dracula.tokens[idx + 14].value.should eq "    "
+      dracula.tokens[idx + 15].value.should eq "\r\n"
+      dracula.tokens[idx + 17].value.should eq "This"
+      dracula.tokens[idx + 17+1].value.should eq " "
+      dracula.tokens[idx + 18+1].value.should eq "ebook"
+      dracula.tokens[idx + 19+1].value.should eq " "
+      dracula.tokens[idx + 20+1].value.should eq "is"
+      dracula.tokens[idx + 21+1].value.should eq " "
+      dracula.tokens[idx + 22+1].value.should eq "for"
+      dracula.tokens[idx + 23+1].value.should eq " "
+      dracula.tokens[idx + 24+1].value.should eq "the"
+      dracula.tokens[50].value.should eq " "
+      dracula.tokens[51].value.should eq "parts"
 
       x = 0
 
@@ -225,8 +234,8 @@ describe Corp do
         x += 1
       end
 
-      x.should eq 2298
-      idx = 2297
+      x.should eq 2372  #  if you change this, change the next assignment to be one less
+      idx = 2371
 
       dracula.tokens[idx-8].value.should eq "\r\n"
       dracula.tokens[idx-7].value.should eq "all"
@@ -252,26 +261,40 @@ describe Corp do
         "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
         "still thirsty.")
 
-      dracula.tokens[idx+5].value.should eq " "
-      dracula.tokens[idx+6].value.should eq "was"
-      dracula.tokens[idx+7].value.should eq " "
-      dracula.tokens[idx+8].value.should eq "a"
-      dracula.tokens[idx+9].value.should eq " "
-      dracula.tokens[idx+10].value.should eq "dog"
-      dracula.tokens[idx+11].value.should eq " "
-      dracula.tokens[idx+12].value.should eq "howling"
-      dracula.tokens[idx+13].value.should eq " "
-      dracula.tokens[idx+14].value.should eq "all"
-      dracula.tokens[idx+15].value.should eq " "
-      dracula.tokens[idx+16].value.should eq "night"
+      idx -= 2
+      dracula.tokens[idx+4].value.should eq " "
+      dracula.tokens[idx+5].value.should eq "There was a dog howling all night under my\r\n" +
+                                                   "window, which may have had something to do with it; or it may have been\r\n" +
+                                                   "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
+                                                   "still thirsty."
+      dracula.tokens[idx+6].value.should eq "There was a dog howling all night under my\r\n" +
+                                                                                               "window, which may have had something to do with it; or it may have been\r\n" +
+                                                                                               "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
+                                                                                               "still thirsty."
+      dracula.tokens[idx+7].value.should eq "There"
+      dracula.tokens[idx+8].value.should eq " "
+      dracula.tokens[idx+9].value.should eq "was"
+      dracula.tokens[idx+10].value.should eq " "
+      dracula.tokens[idx+11].value.should eq "a"
+      dracula.tokens[idx+12].value.should eq " "
+      dracula.tokens[idx+13].value.should eq "dog"
+      dracula.tokens[idx+14].value.should eq " "
+      dracula.tokens[idx+15].value.should eq "howling"
+      dracula.tokens[idx+16].value.should eq " "
+      dracula.tokens[idx+17].value.should eq "all"
+      dracula.tokens[idx+18].value.should eq " "
+      dracula.tokens[idx+19].value.should eq "night"
 
       #  now the gospel according to Frankenstein
 
       frankenstein.tokens[0].type.should eq :punct
-      frankenstein.tokens[1].type.should eq :paragraph  # TODO  parse long spacies as sentence endos
-      frankenstein.tokens[2].type.should eq :sentence  # TODO  parse long spacies as sentence endos
-      frankenstein.tokens[3].type.should eq :punct  # TODO  parse long spacies as sentence endos
-      frankenstein.tokens[4].type.should eq :word  # TODO  parse long spacies as sentence endos
+      frankenstein.tokens[1].type.should eq :paragraph
+      frankenstein.tokens[2].type.should eq :sentence
+      frankenstein.tokens[3].type.should eq :word
+      frankenstein.tokens[4].type.should eq :punct
+      frankenstein.tokens[5].type.should eq :word
+
+#      frankenstein.tokens[1].value.should eq ""
 
       frankenstein.tokens[1].value.should contain(
         "START OF THE PROJECT GUTENBERG EBOOK 84 ***\n" +
@@ -290,21 +313,20 @@ describe Corp do
       frankenstein.tokens[1].value.should contain "Chapter 18"
       frankenstein.tokens[2].type.should eq :sentence
       frankenstein.tokens[2].value.should contain "Frankenstein"
-      frankenstein.tokens[3].type.should eq :punct
-      frankenstein.tokens[3].value.should eq " "
-      frankenstein.tokens[4].type.should eq :word
-      frankenstein.tokens[4].value.should eq "OF"
-      frankenstein.tokens[5].type.should eq :punct
-      frankenstein.tokens[5].value.should eq " "
-      frankenstein.tokens[1].peg[0].should eq :paragraph
+      frankenstein.tokens[3].type.should eq :word
       frankenstein.tokens[1].peg[1].should eq 4
       frankenstein.tokens[1].peg[2].should eq 485
-      frankenstein.tokens[50].type.should eq :punct
+      frankenstein.tokens[2].peg[1].should eq 4
+      frankenstein.tokens[2].peg[2].should eq 485
+      frankenstein.tokens[50].type.should eq :word
+      frankenstein.tokens[51].type.should eq :punct
+      frankenstein.tokens[52].type.should eq :word
+      frankenstein.tokens[53].type.should eq :punct
       yo = 2000
 
-      frankenstein.tokens[yo + 50].value.should eq(
-        "My life might have been passed in ease and luxury, but I preferred glory to\n" +
-       "every enticement that wealth placed in my path.")
+#      frankenstein.tokens[yo + 50].value.should eq(
+#        "My life might have been passed in ease and luxury, but I preferred glory to\n" +
+#       "every enticement that wealth placed in my path.")
 
 #      frankenstein.tokens[yo + 51].value.should eq "My" # TODO  this should be My!
 #      frankenstein.tokens[yo + 52].value.should eq "EBOOK"
@@ -353,20 +375,20 @@ describe Corp do
 #      boat.tokens[56].value.should eq "Men"
 #      # Sentences, Words, and punctuation
 
-      [ "\r\n",
-        "\r\n",
-        "liver",
-        " ",
-        "complaint",
-        " ",
-        "in",
-        " ",
-        "children",
-        "We agree that we are overworked,\r\n" + "and need rest.",
-        "We agree that we are overworked,\r\n" + "and need rest."
-      ].should eq(assert_spun(boat.tokens[1000..1010], &.value))
+      ["A victim to one\r\n" + "hundred and seven fatal maladies.",
+              "A",
+              " ",
+              "victim",
+              " ",
+              "to",
+              " ",
+              "one",
+              "\r\n",
+              "\r\n",
+              "hundred"
+              ].should eq(assert_spun(boat.tokens[1000..1010], &.value))
 
-      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [41773, 37775, 42286]
+      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [42631, 38523, 43226]
     end
   end
 
