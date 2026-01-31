@@ -39,7 +39,7 @@ end
 
 desc "Run all"
 task default: [:build, :spec, :test_libs, APP_OUT] do
-  Rake::Task["sound"].invoke("frog")
+#   Rake::Task["sound"].invoke("frog")
 end
 
 desc "Watch git files and rebuild on change"
