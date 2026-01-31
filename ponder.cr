@@ -12,25 +12,23 @@ end
 class BookGrammar
   # Use the DSL.define block to build the pattern tree
   MAIN = Pegmatite::DSL.define do
-    # Basic atoms
-    low = range('a', 'z')
+    low = range('a', 'z') # Basic atoms
     upp = range('A', 'Z')
     digit = range('0', '9')
     blank = l(" ")
     collapsed = blank.repeat(1).named(:punct) # This captures a run of 1 or more spaces as a single token & saves cognitive room by identifying as a punct
 
-
     # Define CRLF (carriage return + linefeed) as a single unit
     crlf = (l("\r") >> l("\n")).named(:punct)
 
     # Individual line breaks
-    cr = l("\r") # .named(:punct)      # carriage return alone
-    lf = l("\n") # .named(:punct)      # linefeed alone
+    cr = l("\r") # carriage return alone
+    lf = l("\n") # linefeed alone
     brk = (crlf | cr | lf).named(:punct)
     white = collapsed | l("\t") | brk
 
     # Punctuation and Catch-all
-    punct   = l('.') | l(',') | l(':') | l(';') | l('!') | l('?') | l('-') | l('"') | l('\'')
+    punct = l('.') | l(',') | l(':') | l(';') | l('!') | l('?') | l('-') | l('"') | l('\'')
     punct = punct.named(:punct)
     unknown = any # Non-judgmental fallback
 
@@ -41,11 +39,9 @@ class BookGrammar
     # A sentence is a Cap, then anything that isn't terminal punct, then terminal punct
     terminal  = l('.') | l('!') | l('?')
     sentence  = (sentence_start >> (~terminal >> (word | punct | white | unknown)).repeat >> terminal).named(:sentence)
-
     paragraph = (sentence.repeat(1) >> brk.maybe).named(:paragraph)
 
     # Top level entry point
-
     (paragraph | sentence | white | word | punct | unknown).repeat.then_eof
   end
 end

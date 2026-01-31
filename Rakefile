@@ -6,6 +6,11 @@ CR_SOURCES = FileList["**/*.cr"]
 APP_OUT    = "ponder"
 SPEC_OUT   = "matic_spec"
 
+desc "Run all"
+task default: [:build, :spec, :test_libs, APP_OUT] do
+#   Rake::Task["sound"].invoke("frog")
+end
+
 task :clean do
   `rm --force #{APP_OUT} #{SPEC_OUT}`
 end
@@ -37,18 +42,13 @@ task :test_libs do
   sh 'crystal lib/crystal-pegmatite/spec/pegmatite_spec.cr --no-color'
 end
 
-desc "Run all"
-task default: [:build, :spec, :test_libs, APP_OUT] do
-#   Rake::Task["sound"].invoke("frog")
-end
-
 desc "Watch git files and rebuild on change"
 task :watch do
   files = `git ls-files`.split("\n")
 
   listener = Listen.to(".", only: Regexp.union(files.map { |f| Regexp.new("^#{Regexp.escape(f)}$") })) do |_modified, _added, _removed|
     puts "🔁 Git file changed — rebuilding..."
-    system("rake && rake sound[frog]")
+    system("rake && rake sound[frog2]")
   end
 
   puts "👀 Watching git-tracked files..."

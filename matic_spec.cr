@@ -104,33 +104,35 @@ describe Corp do
 
   it "BookGrammar::MAIN parses booklike structures" do
     source = <<-SRC
-    This is a sentence.
-    And this is
-    another sentence.
-    SRC
+        This is a sentence.
+        And this is
+        another sentence.
+        SRC
 
     tokens = Pegmatite.tokenize(BookGrammar::MAIN, source)
 
-    ["This is a sentence.\n" + "A",
-            "This is a sentence.\n",
-            " i",
-            "is ",
-            " a",
-            "a ",
-            " s",
-            "sentence.",
-            "\n" + "A",
+    ["This is a sentence.\n",
+            "This is a sentence.",
+            # "This" is missing
+            " ",
+            "is",
+            " ",
+            "a",
+            " ",
+            "sentence",
+            "\n",
             "And this is\n" + "another sentence.",
             "And this is\n" + "another sentence.",
-            " t",
-            "this ",
-            " i",
-            "is\n",
-            "\n" + "a",
-            "another ",
-            " s",
-            "sentence."].should eq(
-            assert_spun(tokens){|t| source[t[1]..t[2]] })
+            # "And" is missing
+            " ",
+            "this",
+            " ",
+            "is",
+            "\n",
+            "another",
+            " ",
+            "sentence"].should eq(
+            assert_spun(tokens){|t| source[t[1]...t[2]] })
 
     tokens.should eq [{:paragraph, 0, 20},
         {:sentence, 0, 19},
@@ -151,12 +153,6 @@ describe Corp do
         {:word, 32, 39},
         {:punct, 39, 40},
         {:word, 40, 48}]
-
-#    assert_matches ["yo", "yo"], tokens do |peg|
-#      source[peg.peg[1]..(peg.peg[2] - peg.peg[1])]
-#    end
-# Error: undefined method '[]' for Token
-
   end
 
   describe ".parseFolder() with Pegmatite" do
