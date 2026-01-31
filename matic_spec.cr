@@ -2,10 +2,6 @@ require "spec"
 require "./ponder"
 require "./lib/crystal-pegmatite/spec/fixtures/*"
 
-def assert_spun(tokens, &block)
-  return tokens.map{|t| yield(t) }
-end
-
 describe Corp do
 
   describe ".parseFolder" do
@@ -408,4 +404,6 @@ def assert_substring(reference : String, sample : String, swatch_size = 40)
   ERROR
 end
 
-
+def assert_spun(tokens, &block)
+  return tokens.map{|t| yield(t) }
+end
