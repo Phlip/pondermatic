@@ -48,7 +48,7 @@ task :watch do
 
   listener = Listen.to(".", only: Regexp.union(files.map { |f| Regexp.new("^#{Regexp.escape(f)}$") })) do |_modified, _added, _removed|
     puts "🔁 Git file changed — rebuilding..."
-    system("rake && rake sound[frogs]")
+    system("rake && rake sound[frog]")
   end
 
   puts "👀 Watching git-tracked files..."
