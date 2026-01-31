@@ -93,7 +93,7 @@ end
 desc "Seinn fuaim ainmhí: rake sound[kitten]" # Play an animal sound
 task :sound, [:ainm] do |t, args|
   ainm = args[:ainm] || "kitten"                 # default animal name
-    cosán = File.join("scripts", "#{ainm}.wav")    # path to sound file
+    cosán = File.join("scripts", "wav", "#{ainm}.wav")    # path to sound file
 
   unless File.exist?(cosán)
     puts "Níl an comhad fuaime ann: #{cosán}"    # Sound file not found
