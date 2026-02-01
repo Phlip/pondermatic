@@ -26,9 +26,13 @@ class BookGrammar
     # Individual line breaks
     brk = (crlf | cr | lf).named(:punct)
     white = collapsed | l("\t") | brk
+    dot = l('.')
+    bang = l('!')
+    query = l('?')
 
     # Punctuation and Catch-all
-    punct = l('.') | l(',') | l(':') | l(';') | l('!') | l('?') | l('-') | l('"') | l('\'')
+    terminal = dot | bang | query
+    punct = terminal | l(',') | l(':') | l(';') | l('-') | l('"') | l('\'')
     punct = punct.named(:punct)
     unknown = any # Non-judgmental fallback
 
@@ -37,7 +41,6 @@ class BookGrammar
     sentence_start = (upp >> (low | upp | digit).repeat).named(:word)
 
     # A sentence is a Cap, then anything that isn't terminal punct, then terminal punct
-    terminal = l('.') | l('!') | l('?')
     sentence = (sentence_start >> (~terminal >> (word | punct | white | unknown)).repeat >> terminal).named(:sentence)
     paragraph = (sentence.repeat(1) >> brk.maybe).named(:paragraph)
 
