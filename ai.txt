@@ -1,0 +1,27 @@
+below is 
+
+the prompt is for one more line of grammar
+
+      assert_spun(boat.tokens[1000..1020], &.value).should eq [
+        "A victim to one\r\n" + "hundred and seven fatal maladies.",
+        "A",
+        " ",
+        "victim",
+        " ",
+        "to",
+        " ",
+        "one",
+        "\r\n",
+        "\r\n",
+        "hundred",
+        " ",
+        "and",
+        " ",
+        "seven",
+        " ",
+        "fatal",
+        " ",
+        "maladies",
+        # TODO  where's the period?
+        "Useful prescriptions.",
+        "Useful prescriptions."]

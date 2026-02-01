@@ -371,18 +371,29 @@ describe Corp do
 #      boat.tokens[56].value.should eq "Men"
 #      # Sentences, Words, and punctuation
 
-      ["A victim to one\r\n" + "hundred and seven fatal maladies.",
-              "A",
-              " ",
-              "victim",
-              " ",
-              "to",
-              " ",
-              "one",
-              "\r\n",
-              "\r\n",
-              "hundred"
-              ].should eq(assert_spun(boat.tokens[1000..1010], &.value))
+      assert_spun(boat.tokens[1000..1020], &.value).should eq [
+        "A victim to one\r\n" + "hundred and seven fatal maladies.",
+        "A",
+        " ",
+        "victim",
+        " ",
+        "to",
+        " ",
+        "one",
+        "\r\n",
+        "\r\n",
+        "hundred",
+        " ",
+        "and",
+        " ",
+        "seven",
+        " ",
+        "fatal",
+        " ",
+        "maladies",
+        # TODO  where's the period?
+        "Useful prescriptions.",
+        "Useful prescriptions."]
 
       [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [42631, 38523, 43226]
     end
