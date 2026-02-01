@@ -1,4 +1,4 @@
-below is 
+below is a test case using assert_spun()
 
 the prompt is for one more line of grammar
 

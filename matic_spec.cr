@@ -416,5 +416,17 @@ def assert_substring(reference : String, sample : String, swatch_size = 40)
 end
 
 def assert_spun(tokens, &block)
-  return tokens.map{|t| yield(t) }
+  count = 0
+  tokens_size = tokens.size
+
+  result = tokens.map do |t|
+    count += 1
+    yield t
+  end
+
+  # Verify we processed all tokens
+  raise "Expected to process #{tokens_size} tokens but only did #{count} and actual count is #{tokens.size}" \
+    unless count == tokens_size && count == tokens.size
+
+  result
 end
