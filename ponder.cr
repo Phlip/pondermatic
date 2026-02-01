@@ -41,7 +41,7 @@ class BookGrammar
     sentence_start = (upp >> (low | upp | digit).repeat).named(:word)
 
     # A sentence is a Cap, then anything that isn't terminal punct, then terminal punct
-    sentence = (sentence_start >> (~terminal >> (word | punct | white | unknown)).repeat >> terminal).named(:sentence)
+    sentence = (sentence_start >> (~terminal >> (word | punct | white | unknown)).repeat >> terminal.named(:punct)).named(:sentence)
     paragraph = (sentence.repeat(1) >> brk.maybe).named(:paragraph)
 
     # Top level entry point

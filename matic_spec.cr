@@ -119,6 +119,7 @@ describe Corp do
             "a",
             " ",
             "sentence",
+            ".",
             "\n",
             "And this is\n" + "another sentence.",
             "And this is\n" + "another sentence.",
@@ -130,9 +131,9 @@ describe Corp do
             "\n",
             "another",
             " ",
-            "sentence"].should eq(
+            "sentence",
+            "."].should eq(
           assert_spun(tokens){|t| source[t[1]...t[2]] })
-
 
     tokens.should eq [{:paragraph, 0, 20},
                              {:sentence, 0, 19},
@@ -143,6 +144,7 @@ describe Corp do
                              {:word, 8, 9},
                              {:punct, 9, 10},
                              {:word, 10, 18},
+                             {:punct, 18, 19},
                              {:punct, 19, 20},
                              {:paragraph, 20, 49},
                              {:sentence, 20, 49},
@@ -154,7 +156,8 @@ describe Corp do
                              {:punct, 31, 32},
                              {:word, 32, 39},
                              {:punct, 39, 40},
-                             {:word, 40, 48}]
+                             {:word, 40, 48},
+                             {:punct, 48, 49}]
   end
 
   describe ".parseFolder() with Pegmatite" do
@@ -230,8 +233,9 @@ describe Corp do
         x += 1
       end
 
-      x.should eq 2372  #  if you change this, change the next assignment to be one less
-      idx = 2371
+      x.should eq 2445  #  if you change this, change the next assignment to be one less
+      idx = 2444
+      idx.should eq x - 1
 
       dracula.tokens[idx-8].value.should eq "\r\n"
       dracula.tokens[idx-7].value.should eq "all"
@@ -243,13 +247,8 @@ describe Corp do
       dracula.tokens[idx-1].value.should eq "queer"
       dracula.tokens[idx].value.should eq " "
       dracula.tokens[idx+1].value.should eq "dreams"
-      dracula.tokens[idx+2].value.should eq " "
-
-      dracula.tokens[idx+3].value.should eq(
-        "There was a dog howling all night under my\r\n" +
-        "window, which may have had something to do with it; or it may have been\r\n" +
-        "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
-        "still thirsty.")
+      dracula.tokens[idx+2].value.should eq "."
+      dracula.tokens[idx+3].value.should eq " "
 
       dracula.tokens[idx+4].value.should eq(
         "There was a dog howling all night under my\r\n" +
@@ -257,7 +256,7 @@ describe Corp do
         "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
         "still thirsty.")
 
-      idx -= 2
+      idx -= 1
       dracula.tokens[idx+4].value.should eq " "
       dracula.tokens[idx+5].value.should eq "There was a dog howling all night under my\r\n" +
                                                    "window, which may have had something to do with it; or it may have been\r\n" +
@@ -372,30 +371,29 @@ describe Corp do
 #      # Sentences, Words, and punctuation
 
       assert_spun(boat.tokens[1000..1020], &.value).should eq [
-        "A victim to one\r\n" + "hundred and seven fatal maladies.",
-        "A",
-        " ",
-        "victim",
-        " ",
-        "to",
-        " ",
-        "one",
+        ".",
         "\r\n",
         "\r\n",
-        "hundred",
+        "\r\n",
+        "\r\n",
+        "\r\n",
+        "\r\n",
+        "Three invalids.",
+        "Three invalids.",
+        "Three",
         " ",
-        "and",
+        "invalids",
+        ".",
+        "Sufferings of George and Harris.",
+        "Sufferings of George and Harris.",
+        "Sufferings",
         " ",
-        "seven",
+        "of",
         " ",
-        "fatal",
-        " ",
-        "maladies",
-        # TODO  where's the period?
-        "Useful prescriptions.",
-        "Useful prescriptions."]
+        "George",
+        " "]
 
-      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [42631, 38523, 43226]
+      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [43489, 39271, 44166]
     end
   end
 
