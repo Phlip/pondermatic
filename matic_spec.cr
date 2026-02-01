@@ -393,7 +393,8 @@ describe Corp do
         "George",
         " "]
 
-      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [43489, 39271, 44166]
+      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size
+            ].should eq [43489, 39271, 44166]
     end
   end
 
