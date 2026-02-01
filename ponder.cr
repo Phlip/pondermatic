@@ -19,11 +19,11 @@ class BookGrammar
     collapsed = blank.repeat(1).named(:punct) # This captures a run of 1 or more spaces as a single token & saves cognitive room by identifying as a punct
 
     # Define CRLF (carriage return + linefeed) as a single unit
-    crlf = (l("\r") >> l("\n")).named(:punct)
-
-    # Individual line breaks
     cr = l("\r") # carriage return alone
     lf = l("\n") # linefeed alone
+    crlf = (cr >> lf).named(:punct)
+
+    # Individual line breaks
     brk = (crlf | cr | lf).named(:punct)
     white = collapsed | l("\t") | brk
 
