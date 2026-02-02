@@ -393,6 +393,40 @@ describe Corp do
         "George",
         " "]
 
+      assert_spun(boat.tokens[10000..10020], &.value).should eq [  #  to be read in a snippy, camp, Toft, nasal voice
+        " ",
+        "Harris\r\n" +
+        "and I would go down in the morning, and take the boat up to Chertsey,\r\n" +
+        "and George, who would not be able to get away from the City till the\r\n" +
+        "afternoon (George goes to sleep at a bank from ten to four each day,\r\n" +
+        "except Saturdays, when they wake him up and put him outside at two),\r\n" +
+        "would meet us there.\r\n",
+        "Harris\r\n" +
+        "and I would go down in the morning, and take the boat up to Chertsey,\r\n" +
+        "and George, who would not be able to get away from the City till the\r\n" +
+        "afternoon (George goes to sleep at a bank from ten to four each day,\r\n" +
+        "except Saturdays, when they wake him up and put him outside at two),\r\n" +
+        "would meet us there.",
+        "Harris",
+        "\r\n",
+        "\r\n",
+        "and",
+        " ",
+        "I",
+        " ",
+        "would",
+        " ",
+        "go",
+        " ",
+        "down",
+        " ",
+        "in",
+        " ",
+        "the",
+        " ",
+        "morning"
+      ]
+
       [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size
             ].should eq [43489, 39271, 44166]
     end
