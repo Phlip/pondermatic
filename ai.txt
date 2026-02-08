@@ -1,33 +1,447 @@
-below is a test case using assert_spun()
+abject Crystal Language thread. We clear our minds of all impurities.
 
-the prompt is for one more line of grammar that adds the ending
-punct after the stream of tokens in the sentence. The stopping punct. tx!
+Below the sway lines are test and code
+
+The next prompt will accumulate objects called Frob which have a type, value, and Count, which is a decorated integer object holding the total seen items in the corpus. The ultimate aggregate of known Frobs is a primitive global singleton map by value.
+
+Don't write this part yet just think about it:
+
+      @tokens = result.compact_map do |p_tuple|
+
+        # p_tuple is {Symbol, Int32, Int32}
+
+          next if p_tuple[0] == :ignored
+
+        # Index 1 is offset, Index 2 is length (or end offset depending on Pegmatite version)
+
+        token_length = p_tuple[2] - p_tuple[1]
+        val = @body.byte_slice(p_tuple[1], token_length)
+        newb = Token.new(p_tuple[0], val, p_tuple)
+        # token_assessor(newb)
+        return newb
+      end
+
+This prompt is to write the test description that injects hot string into a Corp and accumulates Frobs of various types
+
+    bytes_of_books_we_need_read_in_this_test = 50_000  #  where we stop reading the novels, to save test teim
+    frobs = arrange_frobbed_corpus(bytes_of_books_we_need_read_in_this_test)
+    assert :paragraph == frobs[0].type
+    assert :sentence == frobs[1].type
+    assert :word == frobs[2].type
+    assert :punct == frobs[3].type
+    assert :word == frobs[4].type
+    assert 1 == frobs[0].count
+    assert 1 == frobs[1].count
+    assert 667 == frobs[2].count
+    assert 8442 == frobs[3].count
+    assert 42 == frobs[4].count
+
+When you generate code do not waste cognitive cycles determining ultimate values of asserted manifest constants because the first spec run will proof them flat; then leaving them as correct manifest constants will permit drive-by refactoring later.
+
+Learn from the TODOs below here yet do no do them.
+
+~~~~
+
+require "spec"
+require "./ponder"
+require "./lib/crystal-pegmatite/spec/fixtures/*"
+
+describe Corp do
+
+  describe ".parseFolder" do
+    it "finds matching files in ./corpus and returns Corp objects with filename and body" do
+      results = Corp.parseFolder("./corpus")
+
+      results.should be_a(Array(Corp))
+      results.size.should be > 0
+
+      results[0].filename.should eq "./corpus/dracula.txt"
+      results[1].filename.should eq "./corpus/frankenstein.txt"
+      results[2].filename.should eq "./corpus/three_men_in_a_boat.txt"
+
+      filenames = results.map(&.filename)
+      bodies = results.map(&.body)
+
+      filenames.any? { |f| f.includes?(".txt") }.should be_true
+
+      assert_substring "and he said it was called “paprika hendl,”", bodies[0]
+      assert_substring "or, the Modern Prometheus", bodies[1]
+      assert_substring "Title: Three Men in a Boat", bodies[2]
+      bodies[0].includes?("and he said it was called “paprika hendl,”").should be_true
+      bodies[1].includes?("or, the Modern Prometheus").should be_true
+      bodies[2].includes?("Title: Three Men in a Boat").should be_true
+    end
+  end
+
+  it "Fixtures::HeredocGrammar parses heredoc-like structures" do
+    source = <<-SRC
+    one = 1
+    two = <<-TWO
+      I am a heredoc
+    TWO
+    three = 3
+
+    SRC
+
+    tokens = Pegmatite.tokenize(Fixtures::HeredocGrammar, source)
+
+    tokens.should eq [
+      {:attribute, 0, 8},
+      {:identifier, 0, 3}, # one
+      {:number, 6, 7},     # 1
+      {:attribute, 8, 42},
+      {:identifier, 8, 11}, # two
+      {:heredoc, 14, 41},
+      {:identifier, 17, 20}, # TWO
+      {:string, 21, 38},     # "  I am a heredoc\n"
+      {:identifier, 38, 41}, # TWO
+      {:attribute, 42, 52},
+      {:identifier, 42, 47}, # three
+      {:number, 50, 51},     # 3
+    ]
+  end
+
+  it "BookGrammar::MAIN parses heredoc-like structures" do
+
+    # a heredoc inside a heredoc, folks!
+
+    source = <<-SRC
+    one = 1
+    two = <<-TWO
+      I am a heredoc
+    TWO
+    three = 3
+
+    SRC
+
+    tokens = Pegmatite.tokenize(BookGrammar::MAIN, source)
+
+    tokens.should eq [{:word, 0, 3},
+        {:punct, 3, 4},
+        {:punct, 5, 6},
+        {:word, 6, 7},
+        {:punct, 7, 8},
+        {:word, 8, 11},
+        {:punct, 11, 12},
+        {:punct, 13, 14},
+        {:punct, 16, 17},
+        {:word, 17, 20},
+        {:punct, 20, 21},
+        {:punct, 21, 23},
+        {:word, 23, 24},
+        {:punct, 24, 25},
+        {:word, 25, 27},
+        {:punct, 27, 28},
+        {:word, 28, 29},
+        {:punct, 29, 30},
+        {:word, 30, 37},
+        {:punct, 37, 38},
+        {:word, 38, 41},
+        {:punct, 41, 42},
+        {:word, 42, 47},
+        {:punct, 47, 48},
+        {:punct, 49, 50},
+        {:word, 50, 51},
+        {:punct, 51, 52}]
+  end
+
+  it "BookGrammar::MAIN parses booklike structures" do
+    source = <<-SRC
+        This is a sentence.
+        And this is
+        another sentence.
+        SRC
+
+    tokens = Pegmatite.tokenize(BookGrammar::MAIN, source)
+
+    ["This is a sentence.\n",
+            "This is a sentence.",
+            "This",
+            " ",
+            "is",
+            " ",
+            "a",
+            " ",
+            "sentence",
+            ".",
+            "\n",
+            "And this is\n" + "another sentence.",
+            "And this is\n" + "another sentence.",
+            "And",
+            " ",
+            "this",
+            " ",
+            "is",
+            "\n",
+            "another",
+            " ",
+            "sentence",
+            "."].should eq(
+          assert_spun(tokens){|t| source[t[1]...t[2]] })
+
+    tokens.should eq [{:paragraph, 0, 20},
+                             {:sentence, 0, 19},
+                             {:word, 0, 4},
+                             {:punct, 4, 5},
+                             {:word, 5, 7},
+                             {:punct, 7, 8},
+                             {:word, 8, 9},
+                             {:punct, 9, 10},
+                             {:word, 10, 18},
+                             {:punct, 18, 19},
+                             {:punct, 19, 20},
+                             {:paragraph, 20, 49},
+                             {:sentence, 20, 49},
+                             {:word, 20, 23},
+                             {:punct, 23, 24},
+                             {:word, 24, 28},
+                             {:punct, 28, 29},
+                             {:word, 29, 31},
+                             {:punct, 31, 32},
+                             {:word, 32, 39},
+                             {:punct, 39, 40},
+                             {:word, 40, 48},
+                             {:punct, 48, 49}]
+  end
+
+  describe ".parseFolder() with Pegmatite" do
+    it "tokenizes book text into words and punctuation tokens" do
+
+      # ddd_break  # TODO  debug me
+
+      results = Corp.parseFolder("./corpus")
+
+      dracula = results[0]
+      frankenstein = results[1]
+      boat = results[2]
+
+      dracula.tokens.should_not be_empty
+      frankenstein.tokens.should_not be_empty
+      boat.tokens.should_not be_empty
+
+      dracula.tokens[0].type.should eq :paragraph  # TODO  parse long spacies as sentence endos
+
+      dracula.tokens[0].value.should eq "The Project Gutenberg eBook of Dracula\r\n" +
+       "    \r\n" +
+       "This ebook is for the use of anyone anywhere in the United States and\r\n" +
+       "most other parts of the world at no cost and with almost no restrictions\r\n" +
+       "whatsoever."
+
+      dracula.tokens[0].peg[0].should eq :paragraph
+      dracula.tokens[0].peg[1].should eq 3
+      dracula.tokens[0].peg[2].should eq 205
+      dracula.tokens[1].peg[0].should eq :sentence
+      dracula.tokens[1].peg[1].should eq 3
+      dracula.tokens[1].peg[2].should eq 205
+
+      dracula.tokens[2].value.should eq "The"
+      dracula.tokens[2].peg[0].should eq :word
+      dracula.tokens[2].peg[1].should eq 3
+      dracula.tokens[2].peg[2].should eq 6
+      idx = 1
+      dracula.tokens[idx + 2].peg[0].should eq :punct
+      dracula.tokens[idx + 2].peg[1].should eq 6
+      dracula.tokens[idx + 2].peg[2].should eq 7
+      dracula.tokens[idx + 3].type.should eq :word
+      dracula.tokens[idx + 3].value.should eq "Project"  # TODO  values on blanks not needed
+      dracula.tokens[idx + 4].type.should eq :punct
+      dracula.tokens[idx + 4].value.should eq " "  #  TODO this should be a lookup into the corpus at the known location
+      dracula.tokens[idx + 5].type.should eq :word
+      dracula.tokens[idx + 5].value.should eq "Gutenberg"
+      dracula.tokens[idx + 6].type.should eq :punct
+      dracula.tokens[idx + 6].value.should eq " "
+      dracula.tokens[idx + 7].value.should eq "eBook"
+      dracula.tokens[idx + 8].value.should eq " "
+      dracula.tokens[idx + 9].value.should eq "of"
+      dracula.tokens[idx + 10].value.should eq " "
+      dracula.tokens[idx + 11].value.should eq "Dracula"
+      dracula.tokens[idx + 12].value.should eq "\r\n"  # TODO  these define a paragraph
+      dracula.tokens[idx + 13].value.should eq "\r\n"
+      dracula.tokens[idx + 14].value.should eq "    "
+      dracula.tokens[idx + 15].value.should eq "\r\n"
+      dracula.tokens[idx + 17].value.should eq "This"
+      dracula.tokens[idx + 17+1].value.should eq " "
+      dracula.tokens[idx + 18+1].value.should eq "ebook"
+      dracula.tokens[idx + 19+1].value.should eq " "
+      dracula.tokens[idx + 20+1].value.should eq "is"
+      dracula.tokens[idx + 21+1].value.should eq " "
+      dracula.tokens[idx + 22+1].value.should eq "for"
+      dracula.tokens[idx + 23+1].value.should eq " "
+      dracula.tokens[idx + 24+1].value.should eq "the"
+      dracula.tokens[50].value.should eq " "
+      dracula.tokens[51].value.should eq "parts"
+
+      x = 0
+
+      while dracula.tokens[x].value != "dreams"
+        x += 1
+      end
+
+      x.should eq 2445  #  if you change this, change the next assignment to be one less
+      idx = 2444
+      idx.should eq x - 1
+
+      dracula.tokens[idx-8].value.should eq "\r\n"
+      dracula.tokens[idx-7].value.should eq "all"
+      dracula.tokens[idx-6].value.should eq " "
+      dracula.tokens[idx-5].value.should eq "sorts"
+      dracula.tokens[idx-4].value.should eq " "
+      dracula.tokens[idx-3].value.should eq "of"
+      dracula.tokens[idx-2].value.should eq " "
+      dracula.tokens[idx-1].value.should eq "queer"
+      dracula.tokens[idx].value.should eq " "
+      dracula.tokens[idx+1].value.should eq "dreams"
+      dracula.tokens[idx+2].value.should eq "."
+      dracula.tokens[idx+3].value.should eq " "
+
+      dracula.tokens[idx+4].value.should eq(
+        "There was a dog howling all night under my\r\n" +
+        "window, which may have had something to do with it; or it may have been\r\n" +
+        "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
+        "still thirsty.")
+
+      idx -= 1
+      dracula.tokens[idx+4].value.should eq " "
+      dracula.tokens[idx+5].value.should eq "There was a dog howling all night under my\r\n" +
+                                                   "window, which may have had something to do with it; or it may have been\r\n" +
+                                                   "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
+                                                   "still thirsty."
+      dracula.tokens[idx+6].value.should eq "There was a dog howling all night under my\r\n" +
+                                                   "window, which may have had something to do with it; or it may have been\r\n" +
+                                                   "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
+                                                   "still thirsty."
+      dracula.tokens[idx+7].value.should eq "There"
+      dracula.tokens[idx+8].value.should eq " "
+      dracula.tokens[idx+9].value.should eq "was"
+      dracula.tokens[idx+10].value.should eq " "
+      dracula.tokens[idx+11].value.should eq "a"
+      dracula.tokens[idx+12].value.should eq " "
+      dracula.tokens[idx+13].value.should eq "dog"
+      dracula.tokens[idx+14].value.should eq " "
+      dracula.tokens[idx+15].value.should eq "howling"
+      dracula.tokens[idx+16].value.should eq " "
+      dracula.tokens[idx+17].value.should eq "all"
+      dracula.tokens[idx+18].value.should eq " "
+      dracula.tokens[idx+19].value.should eq "night"
+
+      #  now the gospel according to Frankenstein
+
+      frankenstein.tokens[0].type.should eq :punct
+      frankenstein.tokens[1].type.should eq :paragraph
+      frankenstein.tokens[2].type.should eq :sentence
+      frankenstein.tokens[3].type.should eq :word
+      frankenstein.tokens[4].type.should eq :punct
+      frankenstein.tokens[5].type.should eq :word
+
+      frankenstein.tokens[1].value.should contain(
+        "START OF THE PROJECT GUTENBERG EBOOK 84 ***\n" +
+        "\n" +
+        "Frankenstein;\n" +
+        "\n" +
+        "or, the Modern Prometheus\n" +
+        "\n" +
+        "by Mary Wollstonecraft (Godwin) Shelley\n")
+
+      frankenstein.tokens[0].peg[0].should eq :punct
+      frankenstein.tokens[0].peg[1].should eq 3
+      frankenstein.tokens[0].peg[2].should eq 4
+
+      frankenstein.tokens[1].type.should eq :paragraph
+      frankenstein.tokens[1].value.should contain "Chapter 18"
+      frankenstein.tokens[2].type.should eq :sentence
+      frankenstein.tokens[2].value.should contain "Frankenstein"
+      frankenstein.tokens[3].type.should eq :word
+      frankenstein.tokens[1].peg[1].should eq 4
+      frankenstein.tokens[1].peg[2].should eq 485
+      frankenstein.tokens[2].peg[1].should eq 4
+      frankenstein.tokens[2].peg[2].should eq 485
+      frankenstein.tokens[50].type.should eq :word
+      frankenstein.tokens[51].type.should eq :punct
+      frankenstein.tokens[52].type.should eq :word
+      frankenstein.tokens[53].type.should eq :punct
+      yo = 2000
+
+#      frankenstein.tokens[yo + 50].value.should eq(
+#        "My life might have been passed in ease and luxury, but I preferred glory to\n" +
+#       "every enticement that wealth placed in my path.")
+
+#      boat.tokens[0].type.should eq :sentence  # TODO  parse long spacies as sentence endos
 
       assert_spun(boat.tokens[1000..1020], &.value).should eq [
-        "A victim to one\r\n" + "hundred and seven fatal maladies.",
-        "A",
-        " ",
-        "victim",
-        " ",
-        "to",
-        " ",
-        "one",
+        ".",
         "\r\n",
         "\r\n",
-        "hundred",
+        "\r\n",
+        "\r\n",
+        "\r\n",
+        "\r\n",
+        "Three invalids.",
+        "Three invalids.",
+        "Three",
         " ",
-        "and",
+        "invalids",
+        ".",
+        "Sufferings of George and Harris.",
+        "Sufferings of George and Harris.",
+        "Sufferings",
         " ",
-        "seven",
+        "of",
         " ",
-        "fatal",
-        " ",
-        "maladies",
-        # TODO  where's the period?
-        "Useful prescriptions.",
-        "Useful prescriptions."]
+        "George",
+        " "]
 
-here's the fully vetted PEG grammar in Crystal-pegmatite that pegs our grammar correctly. Please only advise the line to update in it. tx!
+      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [43489, 39271, 44166]
+    end
+  end
+
+end  # Error: expecting identifier 'end', not 'EOF
+
+def assert_substring(reference : String, sample : String, swatch_size = 40)
+  return if sample.includes?(reference)
+
+  # Provide context: show the start of the sample or a truncated version
+  swatch = sample.size > swatch_size ? "#{sample[0...swatch_size]}..." : sample
+
+  fail <<-ERROR
+  Expected substring missing:
+    Expected: #{reference.inspect}
+    In sample: #{swatch.inspect}
+    (Full sample size: #{sample.size} bytes)
+  ERROR
+end
+
+def assert_spun(tokens, &block)
+  count = 0
+  tokens_size = tokens.size
+
+  result = tokens.map do |t|
+    count += 1
+    yield t
+  end
+
+  # Verify we processed all tokens
+  unless count == tokens_size && count == tokens.size
+    raise "Expected to process #{tokens_size} tokens but only did #{count} and actual count is #{tokens.size}"
+  end
+
+  result
+end
+
+
+~~~~
+
+ponder.cr:
+
+require "./lib/crystal-pegmatite/src/pegmatite"
+
+class Token
+  property type : Symbol
+  property value : String
+  property peg : Pegmatite::Token # The raw pegmatite ref
+
+  def initialize(@type, @value, @peg)
+  end
+end
 
 class BookGrammar
   # Use the DSL.define block to build the pattern tree
@@ -61,10 +475,72 @@ class BookGrammar
     sentence_start = (upp >> (low | upp | digit).repeat).named(:word)
 
     # A sentence is a Cap, then anything that isn't terminal punct, then terminal punct
-    sentence = (sentence_start >> (~terminal >> (word | punct | white | unknown)).repeat >> terminal).named(:sentence)
+    sentence = (sentence_start >> (~terminal >> (word | punct | white | unknown)).repeat >> terminal.named(:punct)).named(:sentence)
     paragraph = (sentence.repeat(1) >> brk.maybe).named(:paragraph)
 
     # Top level entry point
     (paragraph | sentence | white | word | punct | unknown).repeat.then_eof
   end
+end
+
+class Corp
+  property filename : String
+  property body : String
+  property tokens : Array(Token) = [] of Token
+  LIMIT = 100_000
+
+  def self.parseFolder(path : String) : Array(Corp)
+    results = [] of Corp
+
+    Dir.glob("#{path}/*.txt").each do |file|
+      next unless File.file?(file)
+
+      # Inside your loop
+      # .head(n) is safe: it returns at most n characters, handling UTF-8 boundaries
+
+      content = File.read(file, encoding: "UTF-8", invalid: :skip)[0...LIMIT]
+      results << Corp.new(file, content)
+    end
+
+    results.sort_by! { |c| File.basename(c.filename) }
+    return results
+  end
+
+  def initialize(@filename : String, @body : String)
+    # --- Token easter ---
+    # Very simple Pegmatite-style tokenizer: words, punctuation, quotes
+    # Inside your initializer
+
+    begin
+      result = Pegmatite.tokenize(BookGrammar::MAIN, @body)
+
+      @tokens = result.compact_map do |p_tuple|
+
+        # p_tuple is {Symbol, Int32, Int32}
+
+        next if p_tuple[0] == :ignored
+
+        # Index 1 is offset, Index 2 is length (or end offset depending on Pegmatite version)
+
+        token_length = p_tuple[2] - p_tuple[1]
+        val = @body.byte_slice(p_tuple[1], token_length)
+        Token.new(p_tuple[0], val, p_tuple)
+      end
+
+    rescue ex : Pegmatite::Pattern::MatchError
+      puts "Failed to parse: #{ex.message}"
+    end
+  end
+
+end
+
+# Use the C library approach for maximum compatibility
+@[Link("c")]
+lib LibC
+  fun raise(sig : Int32) : Int32
+  SIG_TRAP = 5
+end
+
+def ddd_break
+  LibC.raise(LibC::SIG_TRAP)
 end

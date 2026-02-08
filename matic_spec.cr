@@ -263,9 +263,9 @@ describe Corp do
                                                    "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
                                                    "still thirsty."
       dracula.tokens[idx+6].value.should eq "There was a dog howling all night under my\r\n" +
-                                                                                               "window, which may have had something to do with it; or it may have been\r\n" +
-                                                                                               "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
-                                                                                               "still thirsty."
+                                                   "window, which may have had something to do with it; or it may have been\r\n" +
+                                                   "the paprika, for I had to drink up all the water in my carafe, and was\r\n" +
+                                                   "still thirsty."
       dracula.tokens[idx+7].value.should eq "There"
       dracula.tokens[idx+8].value.should eq " "
       dracula.tokens[idx+9].value.should eq "was"
@@ -288,8 +288,6 @@ describe Corp do
       frankenstein.tokens[3].type.should eq :word
       frankenstein.tokens[4].type.should eq :punct
       frankenstein.tokens[5].type.should eq :word
-
-#      frankenstein.tokens[1].value.should eq ""
 
       frankenstein.tokens[1].value.should contain(
         "START OF THE PROJECT GUTENBERG EBOOK 84 ***\n" +
@@ -323,52 +321,7 @@ describe Corp do
 #        "My life might have been passed in ease and luxury, but I preferred glory to\n" +
 #       "every enticement that wealth placed in my path.")
 
-#      frankenstein.tokens[yo + 51].value.should eq "My" # TODO  this should be My!
-#      frankenstein.tokens[yo + 52].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 53].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 54].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 55].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 56].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 57].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 58].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 59].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 60].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 61].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 62].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 63].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 64].value.should eq "EBOOK"
-#      frankenstein.tokens[yo + 65].value.should eq "EBOOK"
-
 #      boat.tokens[0].type.should eq :sentence  # TODO  parse long spacies as sentence endos
-#      boat.tokens[0].value.should eq "The Project Gutenberg eBook, Three Men in a Boat, by Jerome K."
-#      boat.tokens[0].peg[0].should eq :sentence
-#      boat.tokens[0].peg[1].should eq 3
-#      boat.tokens[0].peg[2].should eq 65
-#      boat.tokens[1].peg[0].should eq :word
-#      boat.tokens[1].peg[1].should eq 7
-#      boat.tokens[1].value.should eq "Project"
-#      boat.tokens[1].peg[2].should eq 14
-#      boat.tokens[1].type.should eq :word
-#      boat.tokens[2].type.should eq :word
-#      boat.tokens[2].value.should eq "Gutenberg"
-#      boat.tokens[3].type.should eq :word
-#      boat.tokens[3].value.should eq "eBook"
-#      boat.tokens[4].type.should eq :word
-#      boat.tokens[4].value.should eq "Three"
-#      boat.tokens[5].type.should eq :word
-#      boat.tokens[5].value.should eq "Men"
-#      boat.tokens[6].value.should eq "Men"
-#      boat.tokens[7].value.should eq "Men"
-#      boat.tokens[8].value.should eq "Men"
-#      boat.tokens[9].value.should eq "Men"
-#      boat.tokens[50].value.should eq "Men"
-#      boat.tokens[51].value.should eq "Men"
-#      boat.tokens[52].value.should eq "Men"
-#      boat.tokens[53].value.should eq "Men"
-#      boat.tokens[54].value.should eq "Men"
-#      boat.tokens[55].value.should eq "Men"
-#      boat.tokens[56].value.should eq "Men"
-#      # Sentences, Words, and punctuation
 
       assert_spun(boat.tokens[1000..1020], &.value).should eq [
         ".",
@@ -458,8 +411,9 @@ def assert_spun(tokens, &block)
   end
 
   # Verify we processed all tokens
-  raise "Expected to process #{tokens_size} tokens but only did #{count} and actual count is #{tokens.size}" \
-    unless count == tokens_size && count == tokens.size
+  unless count == tokens_size && count == tokens.size
+    raise "Expected to process #{tokens_size} tokens but only did #{count} and actual count is #{tokens.size}"
+  end
 
   result
 end
