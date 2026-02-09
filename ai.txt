@@ -1,46 +1,13 @@
-abject Crystal Language thread. We clear our minds of all impurities.
 
-Below the sway lines are test and code
+here's the complete files so far: plz do not do any TODO in the sample code
 
-The next prompt will accumulate objects called Frob which have a type, value, and Count, which is a decorated integer object holding the total seen items in the corpus. The ultimate aggregate of known Frobs is a primitive global singleton map by value.
+the prompt is a one-paragraph code review, then write token_assessor() to pass the top description in the specification. The one about accumulating Frobs.
 
-Don't write this part yet just think about it:
+You can see I started the Frob class. Thanks!
 
-      @tokens = result.compact_map do |p_tuple|
+~~~~~
 
-        # p_tuple is {Symbol, Int32, Int32}
-
-          next if p_tuple[0] == :ignored
-
-        # Index 1 is offset, Index 2 is length (or end offset depending on Pegmatite version)
-
-        token_length = p_tuple[2] - p_tuple[1]
-        val = @body.byte_slice(p_tuple[1], token_length)
-        newb = Token.new(p_tuple[0], val, p_tuple)
-        # token_assessor(newb)
-        return newb
-      end
-
-This prompt is to write the test description that injects hot string into a Corp and accumulates Frobs of various types
-
-    bytes_of_books_we_need_read_in_this_test = 50_000  #  where we stop reading the novels, to save test teim
-    frobs = arrange_frobbed_corpus(bytes_of_books_we_need_read_in_this_test)
-    assert :paragraph == frobs[0].type
-    assert :sentence == frobs[1].type
-    assert :word == frobs[2].type
-    assert :punct == frobs[3].type
-    assert :word == frobs[4].type
-    assert 1 == frobs[0].count
-    assert 1 == frobs[1].count
-    assert 667 == frobs[2].count
-    assert 8442 == frobs[3].count
-    assert 42 == frobs[4].count
-
-When you generate code do not waste cognitive cycles determining ultimate values of asserted manifest constants because the first spec run will proof them flat; then leaving them as correct manifest constants will permit drive-by refactoring later.
-
-Learn from the TODOs below here yet do no do them.
-
-~~~~
+matic_spec.cr:
 
 require "spec"
 require "./ponder"
@@ -48,9 +15,41 @@ require "./lib/crystal-pegmatite/spec/fixtures/*"
 
 describe Corp do
 
+  it "frob accumulation counts occurrences by value across the stream" do
+    bytes_of_books_we_need_read_in_this_test = 50_000
+
+    frobs = arrange_frobbed_corpus(bytes_of_books_we_need_read_in_this_test)
+
+    frobs.should_not be_empty
+
+    frobs[0].type.should eq :paragraph
+    frobs[1].type.should eq :sentence
+    frobs[2].type.should eq :word
+    frobs[3].type.should eq :punct
+    frobs[4].type.should eq :word
+
+    frobs[0].count.should eq 1
+    frobs[1].count.should eq 1
+    frobs[2].count.should eq 667
+    frobs[3].count.should eq 8442
+    frobs[4].count.should eq 42
+  end
+
+  def arrange_frobbed_corpus(bytes_of_books_we_need_read)
+    results = Corp.parseFolder("./corpus", bytes_of_books_we_need_read)
+
+    results.should be_a(Array(Corp))
+    results.size.should be > 0
+
+    results[0].filename.should eq "./corpus/dracula.txt"
+    results[1].filename.should eq "./corpus/frankenstein.txt"
+    results[2].filename.should eq "./corpus/three_men_in_a_boat.txt"
+    return Frob.frobs  #  oops!
+  end  #  You trained an ethical AI on gothic horror and a victorian didactic romcom novel??
+
   describe ".parseFolder" do
     it "finds matching files in ./corpus and returns Corp objects with filename and body" do
-      results = Corp.parseFolder("./corpus")
+      results = Corp.parseFolder("./corpus", 100_000)
 
       results.should be_a(Array(Corp))
       results.size.should be > 0
@@ -209,7 +208,7 @@ describe Corp do
 
       # ddd_break  # TODO  debug me
 
-      results = Corp.parseFolder("./corpus")
+      results = Corp.parseFolder("./corpus", 100_000)
 
       dracula = results[0]
       frankenstein = results[1]
@@ -390,7 +389,42 @@ describe Corp do
         "George",
         " "]
 
-      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size].should eq [43489, 39271, 44166]
+      assert_spun(boat.tokens[10000..10020], &.value).should eq [  #  to be read in a snippy, camp, Toft, nasal voice
+        " ",
+        "Harris\r\n" +
+        "and I would go down in the morning, and take the boat up to Chertsey,\r\n" +
+        "and George, who would not be able to get away from the City till the\r\n" +
+        "afternoon (George goes to sleep at a bank from ten to four each day,\r\n" +
+        "except Saturdays, when they wake him up and put him outside at two),\r\n" +
+        "would meet us there.\r\n",
+        "Harris\r\n" +
+        "and I would go down in the morning, and take the boat up to Chertsey,\r\n" +
+        "and George, who would not be able to get away from the City till the\r\n" +
+        "afternoon (George goes to sleep at a bank from ten to four each day,\r\n" +
+        "except Saturdays, when they wake him up and put him outside at two),\r\n" +
+        "would meet us there.",
+        "Harris",
+        "\r\n",
+        "\r\n",
+        "and",
+        " ",
+        "I",
+        " ",
+        "would",
+        " ",
+        "go",
+        " ",
+        "down",
+        " ",
+        "in",
+        " ",
+        "the",
+        " ",
+        "morning"
+      ]
+
+      [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size
+            ].should eq [43489, 39271, 44166]
     end
   end
 
@@ -428,9 +462,10 @@ def assert_spun(tokens, &block)
 end
 
 
-~~~~
+~~~~~
 
 ponder.cr:
+
 
 require "./lib/crystal-pegmatite/src/pegmatite"
 
@@ -483,13 +518,40 @@ class BookGrammar
   end
 end
 
+class Frob
+  property type : Symbol
+  property value : String
+  property count : Int32
+
+  @@frobs = {} of String => Frob
+
+  def initialize(@type, @value)
+    @count = 0
+  end
+
+  def self.token_assessor(token : Token)
+    key = token.value
+
+    frob = @@frobs[key]?
+    unless frob
+      frob = Frob.new(token.type, token.value)
+      @@frobs[key] = frob
+    end
+
+    frob.count += 1
+  end
+
+  def self.frobs
+    @@frobs.values
+  end
+end
+
 class Corp
   property filename : String
   property body : String
   property tokens : Array(Token) = [] of Token
-  LIMIT = 100_000
 
-  def self.parseFolder(path : String) : Array(Corp)
+  def self.parseFolder(path : String, bytes_of_books_we_need_read : Int128) : Array(Corp)
     results = [] of Corp
 
     Dir.glob("#{path}/*.txt").each do |file|
@@ -498,7 +560,7 @@ class Corp
       # Inside your loop
       # .head(n) is safe: it returns at most n characters, handling UTF-8 boundaries
 
-      content = File.read(file, encoding: "UTF-8", invalid: :skip)[0...LIMIT]
+      content = File.read(file, encoding: "UTF-8", invalid: :skip)[0...bytes_of_books_we_need_read]
       results << Corp.new(file, content)
     end
 
@@ -507,12 +569,10 @@ class Corp
   end
 
   def initialize(@filename : String, @body : String)
-    # --- Token easter ---
-    # Very simple Pegmatite-style tokenizer: words, punctuation, quotes
-    # Inside your initializer
-
     begin
       result = Pegmatite.tokenize(BookGrammar::MAIN, @body)
+
+      # TODO  move the token_assessor() inside the tokenizer to then devour its soul
 
       @tokens = result.compact_map do |p_tuple|
 
@@ -524,11 +584,13 @@ class Corp
 
         token_length = p_tuple[2] - p_tuple[1]
         val = @body.byte_slice(p_tuple[1], token_length)
-        Token.new(p_tuple[0], val, p_tuple)
+        newb = Token.new(p_tuple[0], val, p_tuple)
+        # token_assessor(newb)
+        newb
       end
 
-    rescue ex : Pegmatite::Pattern::MatchError
-      puts "Failed to parse: #{ex.message}"
+      rescue ex : Pegmatite::Pattern::MatchError
+        puts "Failed to parse: #{ex.message}"
     end
   end
 
