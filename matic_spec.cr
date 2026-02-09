@@ -18,10 +18,8 @@ describe Corp do
     frobs = Frob.frobs
 
     frobs.size.should eq 2
-
     frobs[0].value.should eq "apple"
     frobs[0].count.should eq 2
-
     frobs[1].value.should eq "banana"
     frobs[1].count.should eq 1
   end
@@ -32,16 +30,24 @@ describe Corp do
     frobs = arrange_frobbed_corpus(bytes_of_books_we_need_read_in_this_test)
 
     frobs.should_not be_empty
-
     frobs[0].value.should eq "apple"
     frobs[1].value.should eq "banana"
+    frobs[1].count.should eq 1
+    frobs[2].value.should eq " "  #  yes the lowly space is a mighty Frob
+    frobs[2].count.should eq 24_484
+    frobs[3].value.should eq "START OF THE PROJECT GUTENBERG EBOOK 84 ***\n\nFrankenstein;\n\nor, the Modern Prometheus\n\nby Mary Wollstonecraft (Godwin) Shelley\n\n\n CONTENTS\n\n Letter 1\n Letter 2\n Letter 3\n Letter 4\n Chapter 1\n Chapter 2\n Chapter 3\n Chapter 4\n Chapter 5\n Chapter 6\n Chapter 7\n Chapter 8\n Chapter 9\n Chapter 10\n Chapter 11\n Chapter 12\n Chapter 13\n Chapter 14\n Chapter 15\n Chapter 16\n Chapter 17\n Chapter 18\n Chapter 19\n Chapter 20\n Chapter 21\n Chapter 22\n Chapter 23\n Chapter 24\n\n\n\n\nLetter 1\n\n_To Mrs."
+    frobs[4].value.should eq "START"
+    frobs[5].value.should eq "OF"
+    frobs[6].value.should eq "THE"
+    frobs[7].value.should eq "PROJECT"
+    frobs[8].value.should eq "GUTENBERG"
+    frobs[9].value.should eq "EBOOK"
     frobs[0].type.should eq :word
     frobs[1].type.should eq :word
     frobs[1].type.should eq :word
     frobs[2].type.should eq :punct
     frobs[3].type.should eq :paragraph
     frobs[4].type.should eq :word
-
     frobs[0].count.should eq 3
     frobs[1].count.should eq 1
     frobs[2].count.should eq 24484
