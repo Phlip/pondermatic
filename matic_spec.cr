@@ -33,6 +33,8 @@ describe Corp do
 
     frobs.should_not be_empty
 
+    frobs[0].value.should eq "apple"
+    frobs[1].value.should eq "banana"
     frobs[0].type.should eq :word
     frobs[1].type.should eq :word
     frobs[1].type.should eq :word
