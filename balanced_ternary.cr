@@ -68,10 +68,10 @@ class BalancedTernary
   end
 
   MULTIPLICATION_TABLE = {
-  "-" => "+0-",
-  "0" => "000",
-  "+" => "-0+",
-  }
+    "-" => "+0-",
+    "0" => "000",
+    "+" => "-0+",
+    }
 
   def *(other)
     product = self.class.new
