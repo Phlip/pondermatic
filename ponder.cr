@@ -60,9 +60,7 @@ class Frob
   property type : Symbol
   property value : String
   property count : Int32
-
   @@frobs = {} of String => Frob
-  @@order = [] of String
 
   def self.token_assessor(token : Token)
     key = token.value
@@ -71,14 +69,13 @@ class Frob
     unless frob
       frob = Frob.new(token.type, token.value)
       @@frobs[key] = frob
-      @@order << key
     end
 
     frob.count += 1
   end
 
   def self.frobs
-    @@order.map { |k| @@frobs[k] }  #  TODO  remove this optimization destroyer
+    return @@frobs.values
   end
 
 end
