@@ -1,6 +1,7 @@
 require "spec"
 require "./ponder"
 require "./lib/crystal-pegmatite/spec/fixtures/*"
+require "./balanced_ternary"
 
 describe Corp do
 
@@ -430,6 +431,32 @@ describe Corp do
 
     [dracula.tokens.size, frankenstein.tokens.size, boat.tokens.size
           ].should eq [43489, 39271, 44166]
+  end
+
+  it "BalancedTernary handles Benito's trio" do
+    a = BalancedTernary.new("+-0++0+")
+    b = BalancedTernary.from_int(-436)
+    c = BalancedTernary.new("+-++-")
+
+    a.to_s.should eq("+-0++0+")
+    a.to_i.should eq(523)
+
+    b.to_s.should eq("-++-0--")
+    b.to_i.should eq(-436)
+
+    c.to_s.should eq("+-++-")
+    c.to_i.should eq(65)
+  end
+
+  it "performs the world tour finale" do
+    a = BalancedTernary.new("+-0++0+")
+    b = BalancedTernary.from_int(-436)
+    c = BalancedTernary.new("+-++-")
+
+    r = a * (b - c)
+
+    r.to_s.should eq("----0+--0++0")
+    r.to_i.should eq(-262_023)
   end
 
 end  # Error: expecting identifier 'end', not 'EOF
