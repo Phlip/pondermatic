@@ -50,31 +50,37 @@ class BookGrammar
 end
 
 class Frob
+
+  def initialize(type : Symbol, value : String)
+    @type = type
+    @value = value
+    @count = 0
+  end
+
   property type : Symbol
   property value : String
   property count : Int32
 
   @@frobs = {} of String => Frob
-
-  def initialize(@type, @value)
-    @count = 0
-  end
+  @@order = [] of String
 
   def self.token_assessor(token : Token)
     key = token.value
-
     frob = @@frobs[key]?
+
     unless frob
       frob = Frob.new(token.type, token.value)
       @@frobs[key] = frob
+      @@order << key
     end
 
     frob.count += 1
   end
 
   def self.frobs
-    @@frobs.values
+    @@order.map { |k| @@frobs[k] }  #  TODO  remove this optimization destroyer
   end
+
 end
 
 class Corp
