@@ -9,7 +9,7 @@ describe Corp do
     Frob.frobs.clear
   end
 
-  it "stores offerings and reports their tallies" do
+  it "Frob stores offerings and reports their tallies" do
     Frob.frobs.clear
 
     Frob.token_assessor(Token.new(:word, "apple", {:word, 0, 5}))
@@ -161,61 +161,74 @@ describe Corp do
 
   it "BookGrammar::MAIN parses booklike structures" do
     source = <<-SRC
-        This is a sentence.
-        And this is
-        another sentence.
-        SRC
+            This is a sentence.
+            And this is
+            another sentence.
+            SRC
 
     tokens = Pegmatite.tokenize(BookGrammar::MAIN, source)
 
     ["This is a sentence.\n",
-            "This is a sentence.",
-            "This",
-            " ",
-            "is",
-            " ",
-            "a",
-            " ",
-            "sentence",
-            ".",
-            "\n",
-            "And this is\n" + "another sentence.",
-            "And this is\n" + "another sentence.",
-            "And",
-            " ",
-            "this",
-            " ",
-            "is",
-            "\n",
-            "another",
-            " ",
-            "sentence",
-            "."].should eq(
-          assert_spun(tokens){|t| source[t[1]...t[2]] })
+    "This is a sentence.",
+    "This",
+    " ",
+    "is",
+    " ",
+    "a",
+    " ",
+    "sentence",
+    ".",
+    "\n",
+    "And this is\n" + "another sentence.",
+    "And this is\n" + "another sentence.",
+    "And",
+    " ",
+    "this",
+    " ",
+    "is",
+    "\n",
+    "another",
+    " ",
+    "sentence",
+    "."].should eq(
+    assert_spun(tokens){|t| source[t[1]...t[2]] })
 
     tokens.should eq [{:paragraph, 0, 20},
-                             {:sentence, 0, 19},
-                             {:word, 0, 4},
-                             {:punct, 4, 5},
-                             {:word, 5, 7},
-                             {:punct, 7, 8},
-                             {:word, 8, 9},
-                             {:punct, 9, 10},
-                             {:word, 10, 18},
-                             {:punct, 18, 19},
-                             {:punct, 19, 20},
-                             {:paragraph, 20, 49},
-                             {:sentence, 20, 49},
-                             {:word, 20, 23},
-                             {:punct, 23, 24},
-                             {:word, 24, 28},
-                             {:punct, 28, 29},
-                             {:word, 29, 31},
-                             {:punct, 31, 32},
-                             {:word, 32, 39},
-                             {:punct, 39, 40},
-                             {:word, 40, 48},
-                             {:punct, 48, 49}]
+    {:sentence, 0, 19},
+    {:word, 0, 4},
+    {:punct, 4, 5},
+    {:word, 5, 7},
+    {:punct, 7, 8},
+    {:word, 8, 9},
+    {:punct, 9, 10},
+    {:word, 10, 18},
+    {:punct, 18, 19},
+    {:punct, 19, 20},
+    {:paragraph, 20, 49},
+    {:sentence, 20, 49},
+    {:word, 20, 23},
+    {:punct, 23, 24},
+    {:word, 24, 28},
+    {:punct, 28, 29},
+    {:word, 29, 31},
+    {:punct, 31, 32},
+    {:word, 32, 39},
+    {:punct, 39, 40},
+    {:word, 40, 48},
+    {:punct, 48, 49}]
+  end
+
+  it "Frobs know their Next Frobs" do
+    source = <<-SRC
+            This is a sentence.
+            And this is
+            another sentence.
+            SRC
+
+    Pegmatite.tokenize BookGrammar::MAIN, source
+
+    # Frob.frobs.length.should eq 42
+
   end
 
   it ".parseFolder() with Pegmatite .parseFolder() with Pegmatite tokenizes book text into words and punctuation tokens" do
