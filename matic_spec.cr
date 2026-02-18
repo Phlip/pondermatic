@@ -126,6 +126,8 @@ describe Corp do
 
     SRC
 
+    # TODO  get inside the tokenizer and use ONE PASS
+
     tokens = Pegmatite.tokenize(BookGrammar::MAIN, source)
 
     tokens.should eq [{:word, 0, 3},
@@ -225,9 +227,10 @@ describe Corp do
             another sentence.
             SRC
 
-    Pegmatite.tokenize BookGrammar::MAIN, source
 
-    Frob.frobs.size.should eq 0
+    corp = Corp.new("yo", source)
+
+    Frob.frobs.size.should eq 13
 
   end
 
