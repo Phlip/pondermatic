@@ -227,11 +227,51 @@ describe Corp do
             another sentence.
             SRC
 
-
     corp = Corp.new("yo", source)
 
     Frob.frobs.size.should eq 13
 
+    frobs = Frob.frobs
+    frobs[0].value.should eq "This is a sentence.\n"
+    frobs[0].type.should eq :paragraph
+    idx = 0
+    frobs[idx += 1].value.should eq "This is a sentence."
+    frobs[idx].type.should eq :sentence
+    frobs[idx].count.should eq 1
+    frobs[idx += 1].value.should eq "This"
+    frobs[idx].type.should eq :word
+    frobs[idx].count.should eq 1
+    frobs[idx += 1].value.should eq " "
+    frobs[idx].type.should eq :punct
+    frobs[idx].count.should eq 6
+    frobs[idx += 1].value.should eq "is"
+    frobs[idx].type.should eq :word
+    frobs[idx].count.should eq 2
+    frobs[idx += 1].value.should eq "a"
+    frobs[idx].type.should eq :word
+    frobs[idx].count.should eq 1
+    frobs[idx += 1].value.should eq "sentence"
+    frobs[idx].type.should eq :word
+    frobs[idx].count.should eq 2
+    frobs[idx += 1].value.should eq "."
+    frobs[idx].type.should eq :punct
+    frobs[idx].count.should eq 2
+    frobs[idx += 1].value.should eq "\n"
+    frobs[idx].type.should eq :punct
+    frobs[idx].count.should eq 2
+    frobs[idx += 1].value.should eq "And this is\nanother sentence."
+    frobs[idx].count.should eq 2
+    frobs[idx].type.should eq :paragraph
+    frobs[idx += 1].value.should eq "And"
+    frobs[idx].count.should eq 1
+    frobs[idx].type.should eq :word
+    frobs[idx += 1].value.should eq "this"
+    frobs[idx].type.should eq :word
+    frobs[idx].count.should eq 1
+    frobs[idx += 1].value.should eq "another"
+    frobs[idx].type.should eq :word
+    frobs[idx].count.should eq 1
+    idx.should eq 12
   end
 
   it ".parseFolder() with Pegmatite .parseFolder() with Pegmatite tokenizes book text into words and punctuation tokens" do
