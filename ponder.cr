@@ -10,8 +10,11 @@ class Token
 end
 
 class BookGrammar
-  # Use the DSL.define block to build the pattern tree
+
   MAIN = Pegmatite::DSL.define do
+
+    # Use the DSL.define block to build the pattern tree
+
     low = range('a', 'z') # Basic atoms
     upp = range('A', 'Z')
     digit = range('0', '9')
@@ -47,6 +50,7 @@ class BookGrammar
     # Top level entry point
     (paragraph | sentence | white | word | punct | unknown).repeat.then_eof
   end
+
 end
 
 class Frob
