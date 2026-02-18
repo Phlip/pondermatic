@@ -6,12 +6,10 @@ require "./balanced_ternary"
 describe Corp do
 
   before_each do
-    Frob.frobs.clear
+    Frob.reset
   end
 
   it "Frob stores offerings and reports their tallies" do
-    Frob.frobs.clear
-
     Frob.token_assessor(Token.new(:word, "apple", {:word, 0, 5}))
     Frob.token_assessor(Token.new(:word, "banana", {:word, 6, 12}))
     Frob.token_assessor(Token.new(:word, "apple", {:word, 13, 18}))
@@ -219,6 +217,8 @@ describe Corp do
   end
 
   it "Frobs know their Next Frobs" do
+    Frob.frobs.size.should eq 0
+
     source = <<-SRC
             This is a sentence.
             And this is
@@ -227,7 +227,7 @@ describe Corp do
 
     Pegmatite.tokenize BookGrammar::MAIN, source
 
-    # Frob.frobs.length.should eq 42
+    Frob.frobs.size.should eq 0
 
   end
 

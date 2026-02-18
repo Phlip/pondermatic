@@ -82,6 +82,10 @@ class Frob
     return @@frobs.values
   end
 
+  def self.reset
+    @@frobs.clear
+  end
+
 end
 
 class Corp
