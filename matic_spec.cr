@@ -9,6 +9,46 @@ describe Corp do
     Frob.reset
   end
 
+  it "Frob counts occurrences via token_assessor" do
+    t1 = Token.new(:word, "apple", {:word, 0, 1})
+    t2 = Token.new(:word, "apple", {:word, 0, 1})
+    t3 = Token.new(:word, "banana", {:word, 0, 1})
+
+    f1 = Frob.token_assessor(t1)
+    f2 = Frob.token_assessor(t2)
+    f3 = Frob.token_assessor(t3)
+
+    f1.should be f2
+    f1.count.should eq 2
+    f3.count.should eq 1
+    Frob.frobs.size.should eq 2
+  end
+
+  it "Frob creates edges and increments weights" do
+    a = Frob.new(:word, "a")
+    b = Frob.new(:word, "b")
+
+    a.link_to(b)
+    a.link_to(b)
+
+    edge = a.next_frobs["b"]
+    edge.weight.should eq 2
+    edge.frob.should be b
+  end
+
+  it "Frob creates separate edges per successor" do
+    a = Frob.new(:word, "a")
+    b = Frob.new(:word, "b")
+    c = Frob.new(:word, "c")
+
+    a.link_to(b)
+    a.link_to(c)
+
+    a.next_frobs.size.should eq 2
+    a.next_frobs["b"].weight.should eq 1
+    a.next_frobs["c"].weight.should eq 1
+  end
+
   it "Frob stores offerings and reports their tallies" do
     Frob.token_assessor(Token.new(:word, "apple", {:word, 0, 5}))
     Frob.token_assessor(Token.new(:word, "banana", {:word, 6, 12}))
