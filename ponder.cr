@@ -1,12 +1,14 @@
 require "./lib/crystal-pegmatite/src/pegmatite"
 
 class Token
+
   property type : Symbol
   property value : String
   property peg : Pegmatite::Token # The raw pegmatite ref
 
   def initialize(@type, @value, @peg)
   end
+
 end
 
 class BookGrammar
@@ -57,12 +59,13 @@ class Frob
   property type : Symbol
   property value : String
   property count : Int32
-  property next_map = {} of String => FrobEdge
+  property next_map_old = {} of String => FrobEdge
   @@frobs = {} of String => Frob
+  # property next_map = {} of Array(String) => Int32
 
   def initialize(@type : Symbol, @value : String)
     @count = 0
-    @next_map = {} of String => FrobEdge
+    @next_map_old = {} of String => FrobEdge
   end
 
   def self.token_assessor(token : Token)
@@ -79,18 +82,18 @@ class Frob
   end
 
   def link_to(next_frob : Frob)
-    edge = @next_map[next_frob.value]?
+    edge = @next_map_old[next_frob.value]?
 
     unless edge
       edge = FrobEdge.new(next_frob)
-      @next_map[next_frob.value] = edge
+      @next_map_old[next_frob.value] = edge
     end
 
     edge.weight += 1
   end
 
   def next_frobs
-    return @next_map
+    return @next_map_old
   end
 
   def self.frobs
@@ -106,7 +109,9 @@ end
 class FrobEdge
 
   property frob : Frob
-  property weight : Int32  #  lolwut we need INFINITY!
+  # edge context : Hash(ContextKey, Int32)
+
+  property weight : Int32  # TODO retire us
   property valence : Float64
 
   def initialize(@frob : Frob)
