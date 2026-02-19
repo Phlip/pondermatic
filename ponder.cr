@@ -105,10 +105,6 @@ class Frob
     back_edge.record_backward(self)
   end
 
-  def next_frobs  # TODO  retire me
-    return @next_map
-  end
-
   def self.frobs
     @@frobs.values.sort_by &.value
   end

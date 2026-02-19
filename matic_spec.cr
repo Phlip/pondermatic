@@ -46,10 +46,10 @@ describe Corp do
     a.link_to(c)
     c.link_to(d)
 
-    a.next_frobs.size.should eq 2
-    a.next_frobs["b"].weight.should eq 1
-    a.next_frobs["c"].weight.should eq 1
-    a.next_frobs["c"].frob.next_frobs["d"].weight.should eq 1
+    a.next_map.size.should eq 2
+    a.next_map["b"].weight.should eq 1
+    a.next_map["c"].weight.should eq 1
+    a.next_map["c"].frob.next_map["d"].weight.should eq 1
   end
 
   it "Frob creates contextual bidirectional edges" do
@@ -63,18 +63,18 @@ describe Corp do
     c.link_to(d)
 
     # forward edges
-    a.next_frobs.size.should eq 2
-    a.next_frobs["b"].weight.should eq 1
-    a.next_frobs["c"].weight.should eq 1
+    a.next_map.size.should eq 2
+    a.next_map["b"].weight.should eq 1
+    a.next_map["c"].weight.should eq 1
 
     # nested forward
-    a.next_frobs["c"]
+    a.next_map["c"]
     .frob
-    .next_frobs["d"]
+    .next_map["d"]
     .weight.should eq 1
 
     # now demand context exists
-    edge_ab = a.next_frobs["b"]
+    edge_ab = a.next_map["b"]
 
     edge_ab.context.should_not be_nil
     edge_ab.context.size.should be > 0
@@ -341,30 +341,30 @@ describe Corp do
     frobs[idx].count.should eq 2
     frobs[idx].type.should eq :word
     frobs[idx].next_map.size.should eq 1
-    frobs[idx].next_frobs.values[0].frob.value.should eq " "
-    frobs[idx].next_frobs.values[0].valence.should eq 1.0
-    frobs[idx].next_frobs.values[0].weight.should eq 2
-    frobs[idx].next_frobs.values[0].frob.next_frobs["a"].frob.value.should eq "a"
-    frobs[idx].next_frobs.values[0].frob.next_frobs["a"].weight.should eq 1
-    frobs[idx].next_frobs.values[0].frob.next_frobs.values[0].valence.should eq 1.0
-    frobs[idx].next_frobs.values[0].frob.next_frobs["another"].frob.value.should eq "another"
-    frobs[idx].next_frobs.values[0].frob.next_frobs["another"].weight.should eq 1
-    frobs[idx].next_frobs.values[0].frob.next_frobs.values[1].valence.should eq 1.0
-    frobs[idx].next_frobs.values[0].frob.next_frobs["is"].frob.value.should eq "is"
-    frobs[idx].next_frobs.values[0].frob.next_frobs.values[2].valence.should eq 1.0
-    frobs[idx].next_frobs.values[0].frob.next_frobs["sentence"].frob.value.should eq "sentence"
-    frobs[idx].next_frobs.values[0].frob.next_frobs["sentence"].weight.should eq 2
-    frobs[idx].next_frobs.values[0].frob.next_frobs.values[3].valence.should eq 1.0
-    frobs[idx].next_frobs.values[0].frob.next_frobs["this"].frob.value.should eq "this"
-    frobs[idx].next_frobs.values[0].frob.next_frobs["this"].weight.should eq 1
-    frobs[idx].next_frobs.values[0].frob.next_frobs.values[4].valence.should eq 1.0
-    frobs[idx].next_frobs.values[0].frob.next_frobs.values.size.should eq 5
+    frobs[idx].next_map.values[0].frob.value.should eq " "
+    frobs[idx].next_map.values[0].valence.should eq 1.0
+    frobs[idx].next_map.values[0].weight.should eq 2
+    frobs[idx].next_map.values[0].frob.next_map["a"].frob.value.should eq "a"
+    frobs[idx].next_map.values[0].frob.next_map["a"].weight.should eq 1
+    frobs[idx].next_map.values[0].frob.next_map.values[0].valence.should eq 1.0
+    frobs[idx].next_map.values[0].frob.next_map["another"].frob.value.should eq "another"
+    frobs[idx].next_map.values[0].frob.next_map["another"].weight.should eq 1
+    frobs[idx].next_map.values[0].frob.next_map.values[1].valence.should eq 1.0
+    frobs[idx].next_map.values[0].frob.next_map["is"].frob.value.should eq "is"
+    frobs[idx].next_map.values[0].frob.next_map.values[2].valence.should eq 1.0
+    frobs[idx].next_map.values[0].frob.next_map["sentence"].frob.value.should eq "sentence"
+    frobs[idx].next_map.values[0].frob.next_map["sentence"].weight.should eq 2
+    frobs[idx].next_map.values[0].frob.next_map.values[3].valence.should eq 1.0
+    frobs[idx].next_map.values[0].frob.next_map["this"].frob.value.should eq "this"
+    frobs[idx].next_map.values[0].frob.next_map["this"].weight.should eq 1
+    frobs[idx].next_map.values[0].frob.next_map.values[4].valence.should eq 1.0
+    frobs[idx].next_map.values[0].frob.next_map.values.size.should eq 5
     frobs[idx += 1].value.should eq "sentence"
     frobs[idx].type.should eq :word
     frobs[idx].count.should eq 2
-    frobs[idx].next_frobs.size.should eq 1
-    frobs[idx].next_frobs.values[0].frob.value.should eq "."
-    frobs[idx].next_frobs.values[0].valence.should eq 1.0
+    frobs[idx].next_map.size.should eq 1
+    frobs[idx].next_map.values[0].frob.value.should eq "."
+    frobs[idx].next_map.values[0].valence.should eq 1.0
     frobs[idx += 1].value.should eq "this"
     frobs[idx].type.should eq :word
     frobs[idx].count.should eq 1
