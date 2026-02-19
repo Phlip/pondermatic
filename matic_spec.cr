@@ -40,13 +40,16 @@ describe Corp do
     a = Frob.new(:word, "a")
     b = Frob.new(:word, "b")
     c = Frob.new(:word, "c")
+    d = Frob.new(:word, "d")
 
     a.link_to(b)
     a.link_to(c)
+    c.link_to(d)
 
     a.next_frobs.size.should eq 2
     a.next_frobs["b"].weight.should eq 1
     a.next_frobs["c"].weight.should eq 1
+    a.next_frobs["c"].frob.next_frobs["d"].weight.should eq 1
   end
 
   it "Frob stores offerings and reports their tallies" do
