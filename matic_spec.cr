@@ -266,15 +266,20 @@ describe Corp do
     frobs[idx].next_frobs.size.should eq 1
     frobs[idx].next_frobs.values[0].frob.value.should eq " "
     frobs[idx].next_frobs.values[0].valence.should eq 1.0
+    frobs[idx].next_frobs.values[0].weight.should eq 2
     frobs[idx].next_frobs.values[0].frob.next_frobs["a"].frob.value.should eq "a"
+    frobs[idx].next_frobs.values[0].frob.next_frobs["a"].weight.should eq 1
     frobs[idx].next_frobs.values[0].frob.next_frobs.values[0].valence.should eq 1.0
     frobs[idx].next_frobs.values[0].frob.next_frobs["another"].frob.value.should eq "another"
+    frobs[idx].next_frobs.values[0].frob.next_frobs["another"].weight.should eq 1
     frobs[idx].next_frobs.values[0].frob.next_frobs.values[1].valence.should eq 1.0
     frobs[idx].next_frobs.values[0].frob.next_frobs["is"].frob.value.should eq "is"
     frobs[idx].next_frobs.values[0].frob.next_frobs.values[2].valence.should eq 1.0
     frobs[idx].next_frobs.values[0].frob.next_frobs["sentence"].frob.value.should eq "sentence"
+    frobs[idx].next_frobs.values[0].frob.next_frobs["sentence"].weight.should eq 2
     frobs[idx].next_frobs.values[0].frob.next_frobs.values[3].valence.should eq 1.0
     frobs[idx].next_frobs.values[0].frob.next_frobs["this"].frob.value.should eq "this"
+    frobs[idx].next_frobs.values[0].frob.next_frobs["this"].weight.should eq 1
     frobs[idx].next_frobs.values[0].frob.next_frobs.values[4].valence.should eq 1.0
     frobs[idx].next_frobs.values[0].frob.next_frobs.values.size.should eq 5
     frobs[idx += 1].value.should eq "sentence"

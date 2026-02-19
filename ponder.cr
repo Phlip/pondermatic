@@ -86,7 +86,7 @@ class Frob
       @next_map[next_frob.value] = edge
     end
 
-    # edge.weight += 1
+    edge.weight += 1
   end
 
   def next_frobs
@@ -103,17 +103,10 @@ class Frob
 
 end
 
-class FrobNext  # TODO  retire me as AI artifact
-  property frob : Frob
-  property valence : Float64
-
-  def initialize(@frob : Frob, @valence : Float64)
-    end
-end
-
 class FrobEdge
 
   property frob : Frob
+  property weight : Int32  #  lolwut we need INFINITY!
   property valence : Float64
 
   def initialize(@frob : Frob)
