@@ -59,7 +59,6 @@ class Frob
   property type : Symbol
   property value : String
   property count : Int32
-  property next_map_old = {} of String => FrobEdge
   @@frobs = {} of String => Frob
   property next_map = {} of String => FrobEdge
   property prev_map = {} of String => FrobEdge
