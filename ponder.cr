@@ -90,6 +90,10 @@ class Frob
   end
 
   def next_frobs
+    return @next_map
+  end
+
+  def next_frobs_old
     @next_map.values
                 .sort_by(&.frob.value)
                 .map { |e| FrobNext.new(e.frob, e.valence) }
@@ -105,7 +109,7 @@ class Frob
 
 end
 
-class FrobNext
+class FrobNext  # TODO  retire me as AI artifact
   property frob : Frob
   property valence : Float64
 
