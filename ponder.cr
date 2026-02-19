@@ -81,20 +81,27 @@ class Frob
   end
 
   def link_to(next_frob : Frob)
-  # forward
+
+    # forward
+
     edge = @next_map[next_frob.value]?
+
     unless edge
       edge = FrobEdge.new(next_frob)
       @next_map[next_frob.value] = edge
     end
+
     edge.record_forward(self)
 
     # backward
+
     back_edge = next_frob.prev_map[self.value]?
+
     unless back_edge
       back_edge = FrobEdge.new(self)
       next_frob.prev_map[self.value] = back_edge
     end
+
     back_edge.record_backward(self)
   end
 
