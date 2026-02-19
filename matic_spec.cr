@@ -31,7 +31,7 @@ describe Corp do
     a.link_to(b)
     a.link_to(b)
 
-    edge = a.next_frobs["b"]
+    edge = a.next_map["b"]
     edge.weight.should eq 2
     edge.frob.should be b
   end
@@ -50,6 +50,40 @@ describe Corp do
     a.next_frobs["b"].weight.should eq 1
     a.next_frobs["c"].weight.should eq 1
     a.next_frobs["c"].frob.next_frobs["d"].weight.should eq 1
+  end
+
+  it "Frob creates contextual bidirectional edges" do
+    a = Frob.new(:word, "a")
+    b = Frob.new(:word, "b")
+    c = Frob.new(:word, "c")
+    d = Frob.new(:word, "d")
+
+    a.link_to(b)
+    a.link_to(c)
+    c.link_to(d)
+
+    # forward edges
+    a.next_frobs.size.should eq 2
+    a.next_frobs["b"].weight.should eq 1
+    a.next_frobs["c"].weight.should eq 1
+
+    # nested forward
+    a.next_frobs["c"]
+    .frob
+    .next_frobs["d"]
+    .weight.should eq 1
+
+    # now demand context exists
+    edge_ab = a.next_frobs["b"]
+
+    edge_ab.context.should_not be_nil
+    edge_ab.context.size.should be > 0
+
+    # and that it remembers its origin
+    edge_ab.context["a"].should eq 1
+
+    # backward context (bidirectional)
+    b.prev_map["a"].weight.should eq 0
   end
 
   it "Frob stores offerings and reports their tallies" do
@@ -306,7 +340,7 @@ describe Corp do
     frobs[idx += 1].value.should eq "is"
     frobs[idx].count.should eq 2
     frobs[idx].type.should eq :word
-    frobs[idx].next_frobs.size.should eq 1
+    frobs[idx].next_map.size.should eq 1
     frobs[idx].next_frobs.values[0].frob.value.should eq " "
     frobs[idx].next_frobs.values[0].valence.should eq 1.0
     frobs[idx].next_frobs.values[0].weight.should eq 2

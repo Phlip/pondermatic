@@ -61,11 +61,11 @@ class Frob
   property count : Int32
   property next_map_old = {} of String => FrobEdge
   @@frobs = {} of String => Frob
-  property next_map = {} of Array(String) => Int32
+  property next_map = {} of String => FrobEdge
+  property prev_map = {} of String => FrobEdge
 
   def initialize(@type : Symbol, @value : String)
     @count = 0
-    @next_map_old = {} of String => FrobEdge
   end
 
   def self.token_assessor(token : Token)
@@ -82,18 +82,25 @@ class Frob
   end
 
   def link_to(next_frob : Frob)
-    edge = @next_map_old[next_frob.value]?
-
+  # forward
+    edge = @next_map[next_frob.value]?
     unless edge
       edge = FrobEdge.new(next_frob)
-      @next_map_old[next_frob.value] = edge
+      @next_map[next_frob.value] = edge
     end
+    edge.record_forward(self)
 
-    edge.weight += 1
+    # backward
+    back_edge = next_frob.prev_map[self.value]?
+    unless back_edge
+      back_edge = FrobEdge.new(self)
+      next_frob.prev_map[self.value] = back_edge
+    end
+    back_edge.record_backward(self)
   end
 
-  def next_frobs
-    return @next_map_old
+  def next_frobs  # TODO  retire me
+    return @next_map
   end
 
   def self.frobs
@@ -109,16 +116,31 @@ end
 class FrobEdge
 
   property frob : Frob
-  # edge context : Hash(ContextKey, Int32)
+  property forward_weight : Int32
+  property back_weight : Int32
+  property context : Hash(String, Int32)
 
-  property weight : Int32  # TODO retire us
+  property weight : Int32
   property valence : Float64
 
   def initialize(@frob : Frob)
+    @forward_weight = 0
+    @back_weight = 0
+    @context = {} of String => Int32
     @weight = 0
     @valence = 1.0
   end
 
+  def record_forward(from : Frob)
+    @forward_weight += 1
+    @weight += 1
+    @context[from.value] = (@context[from.value]? || 0) + 1
+  end
+
+  def record_backward(from : Frob)
+    @back_weight += 1
+    @context[from.value] = (@context[from.value]? || 0) + 1
+  end
 end
 
 class Corp
