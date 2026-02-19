@@ -93,12 +93,6 @@ class Frob
     return @next_map
   end
 
-  def next_frobs_old
-    @next_map.values
-                .sort_by(&.frob.value)
-                .map { |e| FrobNext.new(e.frob, e.valence) }
-  end
-
   def self.frobs
     @@frobs.values.sort_by &.value
   end
