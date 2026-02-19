@@ -220,55 +220,61 @@ describe Corp do
 
   it "Frobs know their Next Frobs" do
     Frob.frobs.size.should eq 0
-
-    source = <<-SRC
-            This is a sentence.
-            And this is
-            another sentence.
-            SRC
+    source = "This is a sentence.\nAnd this is another sentence."
 
     corp = Corp.new("yo", source)
 
     Frob.frobs.size.should eq 13
-
     frobs = Frob.frobs
-    frobs[0].value.should eq "This is a sentence.\n"
-    frobs[0].type.should eq :paragraph
+    frobs = frobs.sort_by(&.value)
+    frobs[0].value.should eq "\n"
+    frobs[0].type.should eq :punct
     idx = 0
-    frobs[idx += 1].value.should eq "This is a sentence."
-    frobs[idx].type.should eq :sentence
-    frobs[idx].count.should eq 1
-    frobs[idx += 1].value.should eq "This"
-    frobs[idx].type.should eq :word
-    frobs[idx].count.should eq 1
     frobs[idx += 1].value.should eq " "
     frobs[idx].type.should eq :punct
-    frobs[idx].count.should eq 6
-    frobs[idx += 1].value.should eq "is"
-    frobs[idx].type.should eq :word
-    frobs[idx].count.should eq 2
-    frobs[idx += 1].value.should eq "a"
-    frobs[idx].type.should eq :word
-    frobs[idx].count.should eq 1
-    frobs[idx += 1].value.should eq "sentence"
-    frobs[idx].type.should eq :word
-    frobs[idx].count.should eq 2
+    frobs[idx].count.should eq 7
     frobs[idx += 1].value.should eq "."
     frobs[idx].type.should eq :punct
     frobs[idx].count.should eq 2
-    frobs[idx += 1].value.should eq "\n"
-    frobs[idx].type.should eq :punct
-    frobs[idx].count.should eq 2
-    frobs[idx += 1].value.should eq "And this is\nanother sentence."
-    frobs[idx].count.should eq 2
-    frobs[idx].type.should eq :paragraph
     frobs[idx += 1].value.should eq "And"
-    frobs[idx].count.should eq 1
     frobs[idx].type.should eq :word
-    frobs[idx += 1].value.should eq "this"
+    frobs[idx].count.should eq 1
+    frobs[idx += 1].value.should eq "And this is another sentence."
+    frobs[idx].type.should eq :paragraph
+    frobs[idx].count.should eq 2
+
+    #  and now we pass these assertions!
+
+    frobs[idx += 1].value.should eq "This"
+    frobs[idx].type.should eq :word
+    frobs[idx].count.should eq 1
+    frobs[idx += 1].value.should eq "This is a sentence."
+    frobs[idx].type.should eq :sentence
+    frobs[idx].count.should eq 1
+    frobs[idx += 1].value.should eq "This is a sentence.\n"
+    frobs[idx].type.should eq :paragraph
+    frobs[idx].count.should eq 1
+    frobs[idx += 1].value.should eq "a"
     frobs[idx].type.should eq :word
     frobs[idx].count.should eq 1
     frobs[idx += 1].value.should eq "another"
+    frobs[idx].count.should eq 1
+    frobs[idx].type.should eq :word
+    frobs[idx += 1].value.should eq "is"
+    frobs[idx].count.should eq 2
+    frobs[idx].type.should eq :word
+    frobs[idx].next_frobs.size.should eq 1
+    frobs[idx].next_frobs[0].frob.value.should eq " "
+    frobs[idx].next_frobs[0].valence.should eq 1.0
+    # frobs[idx].next_frobs[1].frob.value.should eq "another"
+    # frobs[idx].next_frobs[1].valence.should eq 1.0
+    frobs[idx += 1].value.should eq "sentence"
+    frobs[idx].type.should eq :word
+    frobs[idx].count.should eq 2
+    frobs[idx].next_frobs.size.should eq 1
+    frobs[idx].next_frobs[0].frob.value.should eq "."
+    frobs[idx].next_frobs[0].valence.should eq 1.0
+    frobs[idx += 1].value.should eq "this"
     frobs[idx].type.should eq :word
     frobs[idx].count.should eq 1
     idx.should eq 12

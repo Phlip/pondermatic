@@ -54,17 +54,16 @@ class BookGrammar
 end
 
 class Frob
-
-  def initialize(type : Symbol, value : String)
-    @type = type
-    @value = value
-    @count = 0
-  end
-
   property type : Symbol
   property value : String
   property count : Int32
+  property next_map = {} of String => FrobEdge
   @@frobs = {} of String => Frob
+
+  def initialize(@type : Symbol, @value : String)
+    @count = 0
+    @next_map = {} of String => FrobEdge
+  end
 
   def self.token_assessor(token : Token)
     key = token.value
@@ -76,14 +75,52 @@ class Frob
     end
 
     frob.count += 1
+    frob
+  end
+
+  def link_to(next_frob : Frob)
+    edge = @next_map[next_frob.value]?
+
+    unless edge
+      edge = FrobEdge.new(next_frob)
+      @next_map[next_frob.value] = edge
+    end
+
+    # edge.weight += 1
+  end
+
+  def next_frobs
+    @next_map.values
+                .sort_by(&.frob.value)
+                .map { |e| FrobNext.new(e.frob, e.valence) }
   end
 
   def self.frobs
-    return @@frobs.values
+    @@frobs.values.sort_by &.value
   end
 
   def self.reset
     @@frobs.clear
+  end
+
+end
+
+class FrobNext
+  property frob : Frob
+  property valence : Float64
+
+  def initialize(@frob : Frob, @valence : Float64)
+    end
+end
+
+class FrobEdge
+
+  property frob : Frob
+  property valence : Float64
+
+  def initialize(@frob : Frob)
+    @weight = 0
+    @valence = 1.0
   end
 
 end
@@ -113,31 +150,31 @@ class Corp
   def initialize(@filename : String, @body : String)
     begin
       result = Pegmatite.tokenize(BookGrammar::MAIN, @body)
-
       @tokens = convert_tokens_into_frobs(result)
-
-      rescue ex : Pegmatite::Pattern::MatchError
-        puts "Failed to parse: #{ex.message}"
+    rescue ex : Pegmatite::Pattern::MatchError
+      puts "Failed to parse: #{ex.message}"
     end
   end
 
   def convert_tokens_into_frobs(result)
+    previous_frob = nil
+
     return result.compact_map do |p_tuple|
-
-      # p_tuple is {Symbol, Int32, Int32}
-
         next if p_tuple[0] == :ignored
 
-      # Index 1 is offset, Index 2 is length (or end offset depending on Pegmatite version)
+      # p_tuple is {Symbol, Int32, Int32}
+    # Index 1 is offset, Index 2 is length (or end offset depending on Pegmatite version)
 
       token_length = p_tuple[2] - p_tuple[1]
       val = @body.byte_slice(p_tuple[1], token_length)
-      newb = Token.new(p_tuple[0], val, p_tuple)
+      token = Token.new(p_tuple[0], val, p_tuple)
 
-      # TODO  move the token_assessor() inside the tokenizer to then devour its soul
+      current = Frob.token_assessor(token)
 
-      Frob.token_assessor(newb)
-      newb
+      previous_frob.try &.link_to(current)
+      previous_frob = current
+
+      token
     end
   end
 
