@@ -61,7 +61,7 @@ class Frob
   property count : Int32
   property next_map_old = {} of String => FrobEdge
   @@frobs = {} of String => Frob
-  # property next_map = {} of Array(String) => Int32
+  property next_map = {} of Array(String) => Int32
 
   def initialize(@type : Symbol, @value : String)
     @count = 0

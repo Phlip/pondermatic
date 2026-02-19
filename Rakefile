@@ -2,6 +2,12 @@ require "rake"
 require "rake/testtask"   # Adds the Rake::TestTask class for running Ruby test files
 require "listen"
 
+# a Rakefile is a command-line aggregator, turning random generic
+# low-level commands into clean, project-specific high-level commands
+
+# integrate like this:
+# rake default sound[bats_and_dogs] && git commit -am 'parse Frobs into sentence predictors' && git push
+
 CR_SOURCES = FileList["**/*.cr"]
 APP_OUT    = "ponder"
 SPEC_OUT   = "matic_spec"
