@@ -1,5 +1,4 @@
 require "../ponder"
-
 require "random"
 
 def random_start : Frob

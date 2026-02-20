@@ -122,9 +122,6 @@ class FrobEdge
   property back_weight : Int32
   property context : Hash(String, Int32)
 
-  property weight : Int32
-  property valence : Float64
-
   def initialize(@frob : Frob)
     @forward_weight = 0
     @back_weight = 0
@@ -199,7 +196,6 @@ class Corp
   end
 
 end
-
 
 # Use the C library approach for maximum compatibility
 @[Link("c")]
